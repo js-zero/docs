@@ -7,11 +7,10 @@
 
 // @assume fetchPeople : () => Promise(Array(Person), HttpError)
 function fetchPeople () {
-  return fetch('http://api.example.com/people');
+  return HTTP.get('http://api.example.com/people');
 }
 
-// In this example fetchPeople is the anchor function, making
-// type annotations unnecessary for the rest of the program!
+// Here we safely use fetchPeople without the need for further type annotations.
 fetchPeople()
   .then(function(people) {
     var names = people.map(p => p.name);

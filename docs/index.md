@@ -2,13 +2,13 @@
 
 *Current Status: Design phase. We need your input!*
 
-JavaScript is getting more and more **popular** every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.
+JavaScript is getting more and more popular every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.
 
-Many different efforts have been made to create new, safter languages that compile *to* JavaScript. While many of these languages are designed very well, the fact is **most people already know JavaScript**, and are not so inclined to learn a new language to do the same things JavaScript can do.
+Many efforts have been made to create new, safter languages that compile *to* JavaScript. While many of these languages are designed very well, the fact is **most people already know JavaScript**, and are not so inclined to learn a new language to do the same things JavaScript can do.
 
-That's where this project comes in. **JS Zero** is a **ES6-compatible, proper subset** of JavaScript that aims to be functional and type-safe for doing I/O in web applications.
+**JS Zero** is a **ES6-compatible, proper subset** of JavaScript that aims to be functional and type-safe for doing I/O in web applications.
 
-### Vision & Goals
+## Why JS Zero?
 
 ```text
 
@@ -22,13 +22,17 @@ That's where this project comes in. **JS Zero** is a **ES6-compatible, proper su
 
 Much of programming in web development today is **"data in, data out"**. That is, given some data sources, we write programs to combine / aggregate / transform that data, then output the result.
 
-JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a **compatible subset** of the ubiquitous language of the web. This is made possible with three main goals:
+JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a **compatible subset** of the ubiquitous language of the web.
 
-- Specify a more strict, ES6-compatible, proper subset of JavaScript + CommonJS
+## Vision & Goals
+
+JS Zero has three main goals:
+
+- Specify a stricter, ES6-compatible, proper subset of JavaScript
 - Design and build a type system that can type check this subset soundly
 - As a developer tool, remain easy and seamless to use and understand.
 
-With these properties, JS Zero will help you significantly towards writing bug-free programs.
+With these goals complete, JS Zero will help you significantly towards writing bug-free programs.
 
 ## Motivating Example
 
@@ -41,7 +45,7 @@ At this point, JS Zero already provides **a key feature** to help us:
 Because JS Zero must be valid JavaScript, we must declare these types **in comments**. Here is what type declarations for the above example would like (notice the `@` symbols):
 
 ```javascript
-// Although GitHub returns more data than this for a repo,
+// Although GitHub returns much more data,
 // we only need to declare the types of data we care about.
 //
 // @type Repo = { id: Number, name: String, languages_url: String }
@@ -123,10 +127,10 @@ On the other hand, if you're importing a larger library, you might need to write
 
 ```javascript
 /*
-@assume module 'react' {
-  type VirtualElement = new Type();
-  type Attrs = Object | Null;
-  type Child = String | VirtualElement;
+@module React 'react' {
+  @newtype VirtualElement;
+  @type Attrs = Object | Null;
+  @type Child = String | VirtualElement;
 
   createElement : (String) => VirtualElement;
   createElement : (String, Attrs) => VirtualElement;
@@ -145,4 +149,4 @@ React.render(
 
 ## Interested?
 
-JS Zero is only in its design phase. If you find JS Zero interesting, we would love to hear your input!
+JS Zero is only in its design phase. If you find JS Zero interesting, we would love to have your valuable input!
