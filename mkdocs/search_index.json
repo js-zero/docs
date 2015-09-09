@@ -1,0 +1,114 @@
+{
+    "docs": [
+        {
+            "location": "/", 
+            "text": "JS Zero: Zero bugs, Zero hassle.\n\n\nCurrent Status: Design phase. We need your input!\n\n\nJavaScript is getting more and more \npopular\n every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.\n\n\nMany different efforts have been made to create new, safter languages that compile \nto\n JavaScript. While many of these languages are designed very well, the fact is \nmost people already know JavaScript\n, and are not so inclined to learn a new language to do the same things JavaScript can do.\n\n\nThat's where this project comes in. \nJS Zero\n is a \nES6-compatible, proper subset\n of JavaScript that aims to be functional and type-safe for doing I/O in web applications.\n\n\nVision \n Goals\n\n\n\n\u2009\u2009+--------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+---------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+--------------+\n\u2009\u2009|\u2009\u2009Input\u2009\u2009     |\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009 JS Zero      |\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009\u2009Output\u2009    \u2009|\n\u2009\u2009|  (HTTP)\u2009 \u2009  \u2009|------\n\u2009|\u2009 (Valid ES6)  |------\n\u2009|  (JSON\u2009API)  |\n\u2009\u2009|\u2009\u2009(Database)\u2009\u2009|\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009\u2009(type safe)\u2009 |\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009\u2009(HTML)\u2009\u2009    |\n\u2009\u2009+--------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+---------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+--------------+\n\n\n\n\n\nMuch of programming in web development today is \n\"data in, data out\"\n. That is, given some data sources, we write programs to combine / aggregate / transform that data, then output the result.\n\n\nJavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a \ncompatible subset\n of the ubiquitous language of the web. This is made possible with three main goals:\n\n\n\n\nSpecify a more strict, ES6-compatible, proper subset of JavaScript + CommonJS\n\n\nDesign and build a type system that can type check this subset soundly\n\n\nAs a developer tool, remain easy and seamless to use and understand.\n\n\n\n\nWith these properties, JS Zero will help you significantly towards writing bug-free programs.\n\n\nMotivating Example\n\n\nLet's pretend you're making an app that allows a user to enter their \nGitHub username\n and receive back the \ntotal number of lines\n written across their repositories. This will involve using \nGitHub's API\n.\n\n\nAt this point, JS Zero already provides \na key feature\n to help us:\n\n\n\n\nWe must \ndeclare the types\n of the data we will get from the GitHub API. This is a reasonable requirement, since there is no way JS Zero can infer what kind of data GitHub will return.\n\n\n\n\nBecause JS Zero must be valid JavaScript, we must declare these types \nin comments\n. Here is what type declarations for the above example would like (notice the \n@\n symbols):\n\n\n// Although GitHub returns more data than this for a repo,\n// we only need to declare the types of data we care about.\n//\n// @type Repo = { id: Number, name: String, languages_url: String }\n// @type Languages = Map(String, Number)\n\n\n\n\nAs mentioned, the type of an API request cannot be inferred. That's ok; we can tell JS Zero to \nassume\n the type of a function instead of type checking the function's body. This means JS Zero will \ntrust\n that our type declaration is correct.\n\n\nIn our example, we tell JS Zero to \n@assume\n specific types for our API calls:\n\n\n// @assume fetchRepos : (String) =\n Promise(Array(Repo), HttpError)\nfunction fetchRepos (user) {\n  // Pretend `HTTP` is a library that returns a promise\n  return HTTP.get('http://api.github.com/users/' + user + '/repos');\n}\n\n// @assume fetchLangs : (String) =\n Promise(Languages, HttpError)\nfunction fetchLangs (languages_url) {\n\n  return HTTP.get(languages_url).then(function(langs) {\n    // Be careful! The above `@assume` means no type checking will be done for this code.\n    var keyValPairs = Object.keys(langs).map( k =\n [k, langs[k]] );\n    return new Map(keyValPairs);\n  })\n}\n\n\n\n\nNow that we've declared the types of our HTTP requests, we can \nsafely\n make use of them:\n\n\n// Note how there are NO TYPE DECLARATIONS in the following code!\n\nmyFormElement.addEventListener('submit', function(e) {\n  e.preventDefault();\n\n  fetchRepo(this.githubUsername.value)\n\n    .then(function(repos) {\n      // This line doesn't type check - r.language_url is not a property!\n      // var promises = repos.map(r =\n fetchLangs(r.language_url));\n\n      var promises = repos.map(r =\n fetchLangs(r.languages_url));\n      return Promise.all(promises);\n    })\n\n    .then(function(repoLanguages) {\n      // At this point, `repoLanguages` is an Array of Languages.\n      // In other words, it has the type Array( Map(String, Number) ).\n      // If that slipped by you, no problem. JS Zero has got you covered.\n\n      var totalLineCount = repoLanguages\n                           .map(langs =\n langs.values().reduce(add))\n                           .reduce(add)\n      ;\n      alert(\nYou have written \n + totalLineCount + \n lines of code!\n);\n    })\n  ;\n});\n\nfunction add (x, y) { return x + y; }\n\n\n\n\nAs you can see, once you annotate your boundaries (HTTP in this case), no further type declarations are necessary. The idea is, you record the shape of your data once, and then safely forget about it.\n\n\nIntegrating with Other JS Code\n\n\nAlthough all JS Zero code is valid JavaScript code, not all JavaScript code is valid Zero code. If you want your code to be type safe, sometimes you will have to annotate 3rd party libraries.\n\n\nAs it turns out, \n@assume\n is an easy way to do this if you only need a function or two. For example, let's say you want to use the \nmarked\n npm package to render some markdown:\n\n\n// @assume marked : (String) =\n String\nvar marked = require('marked');\nconsole.log( marked('I am using __markdown__.') );\n\n\n\n\nOn the other hand, if you're importing a larger library, you might need to write annotations yourself (assuming someone else has not already). For example, if you want to use \nReact.js\n to handle your views, the type declarations might look something like this:\n\n\n/*\n@assume module 'react' {\n  type VirtualElement = new Type();\n  type Attrs = Object | Null;\n  type Child = String | VirtualElement;\n\n  createElement : (String) =\n VirtualElement;\n  createElement : (String, Attrs) =\n VirtualElement;\n  createElement : (String, Attrs, Child...) =\n VirtualElement;\n  render : (VirtualElement, DomElement) =\n Void;\n}\n*/\nvar React = require('react');\n\n// All type safe!\nReact.render(\n  React.createElement('h1', null, 'Hello, world!'),\n  document.getElementById('.my-div')\n);\n\n\n\n\nInterested?\n\n\nJS Zero is only in its design phase. If you find JS Zero interesting, we would love to hear your input!", 
+            "title": "Home"
+        }, 
+        {
+            "location": "/#js-zero-zero-bugs-zero-hassle", 
+            "text": "Current Status: Design phase. We need your input!  JavaScript is getting more and more  popular  every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.  Many different efforts have been made to create new, safter languages that compile  to  JavaScript. While many of these languages are designed very well, the fact is  most people already know JavaScript , and are not so inclined to learn a new language to do the same things JavaScript can do.  That's where this project comes in.  JS Zero  is a  ES6-compatible, proper subset  of JavaScript that aims to be functional and type-safe for doing I/O in web applications.  Vision   Goals  \n\u2009\u2009+--------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+---------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+--------------+\n\u2009\u2009|\u2009\u2009Input\u2009\u2009     |\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009 JS Zero      |\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009\u2009Output\u2009    \u2009|\n\u2009\u2009|  (HTTP)\u2009 \u2009  \u2009|------ \u2009|\u2009 (Valid ES6)  |------ \u2009|  (JSON\u2009API)  |\n\u2009\u2009|\u2009\u2009(Database)\u2009\u2009|\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009\u2009(type safe)\u2009 |\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009|\u2009\u2009(HTML)\u2009\u2009    |\n\u2009\u2009+--------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+---------------+\u2009\u2009\u2009\u2009\u2009\u2009\u2009\u2009+--------------+  Much of programming in web development today is  \"data in, data out\" . That is, given some data sources, we write programs to combine / aggregate / transform that data, then output the result.  JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a  compatible subset  of the ubiquitous language of the web. This is made possible with three main goals:   Specify a more strict, ES6-compatible, proper subset of JavaScript + CommonJS  Design and build a type system that can type check this subset soundly  As a developer tool, remain easy and seamless to use and understand.   With these properties, JS Zero will help you significantly towards writing bug-free programs.", 
+            "title": "JS Zero: Zero bugs, Zero hassle."
+        }, 
+        {
+            "location": "/#motivating-example", 
+            "text": "Let's pretend you're making an app that allows a user to enter their  GitHub username  and receive back the  total number of lines  written across their repositories. This will involve using  GitHub's API .  At this point, JS Zero already provides  a key feature  to help us:   We must  declare the types  of the data we will get from the GitHub API. This is a reasonable requirement, since there is no way JS Zero can infer what kind of data GitHub will return.   Because JS Zero must be valid JavaScript, we must declare these types  in comments . Here is what type declarations for the above example would like (notice the  @  symbols):  // Although GitHub returns more data than this for a repo,\n// we only need to declare the types of data we care about.\n//\n// @type Repo = { id: Number, name: String, languages_url: String }\n// @type Languages = Map(String, Number)  As mentioned, the type of an API request cannot be inferred. That's ok; we can tell JS Zero to  assume  the type of a function instead of type checking the function's body. This means JS Zero will  trust  that our type declaration is correct.  In our example, we tell JS Zero to  @assume  specific types for our API calls:  // @assume fetchRepos : (String) =  Promise(Array(Repo), HttpError)\nfunction fetchRepos (user) {\n  // Pretend `HTTP` is a library that returns a promise\n  return HTTP.get('http://api.github.com/users/' + user + '/repos');\n}\n\n// @assume fetchLangs : (String) =  Promise(Languages, HttpError)\nfunction fetchLangs (languages_url) {\n\n  return HTTP.get(languages_url).then(function(langs) {\n    // Be careful! The above `@assume` means no type checking will be done for this code.\n    var keyValPairs = Object.keys(langs).map( k =  [k, langs[k]] );\n    return new Map(keyValPairs);\n  })\n}  Now that we've declared the types of our HTTP requests, we can  safely  make use of them:  // Note how there are NO TYPE DECLARATIONS in the following code!\n\nmyFormElement.addEventListener('submit', function(e) {\n  e.preventDefault();\n\n  fetchRepo(this.githubUsername.value)\n\n    .then(function(repos) {\n      // This line doesn't type check - r.language_url is not a property!\n      // var promises = repos.map(r =  fetchLangs(r.language_url));\n\n      var promises = repos.map(r =  fetchLangs(r.languages_url));\n      return Promise.all(promises);\n    })\n\n    .then(function(repoLanguages) {\n      // At this point, `repoLanguages` is an Array of Languages.\n      // In other words, it has the type Array( Map(String, Number) ).\n      // If that slipped by you, no problem. JS Zero has got you covered.\n\n      var totalLineCount = repoLanguages\n                           .map(langs =  langs.values().reduce(add))\n                           .reduce(add)\n      ;\n      alert( You have written   + totalLineCount +   lines of code! );\n    })\n  ;\n});\n\nfunction add (x, y) { return x + y; }  As you can see, once you annotate your boundaries (HTTP in this case), no further type declarations are necessary. The idea is, you record the shape of your data once, and then safely forget about it.", 
+            "title": "Motivating Example"
+        }, 
+        {
+            "location": "/#integrating-with-other-js-code", 
+            "text": "Although all JS Zero code is valid JavaScript code, not all JavaScript code is valid Zero code. If you want your code to be type safe, sometimes you will have to annotate 3rd party libraries.  As it turns out,  @assume  is an easy way to do this if you only need a function or two. For example, let's say you want to use the  marked  npm package to render some markdown:  // @assume marked : (String) =  String\nvar marked = require('marked');\nconsole.log( marked('I am using __markdown__.') );  On the other hand, if you're importing a larger library, you might need to write annotations yourself (assuming someone else has not already). For example, if you want to use  React.js  to handle your views, the type declarations might look something like this:  /*\n@assume module 'react' {\n  type VirtualElement = new Type();\n  type Attrs = Object | Null;\n  type Child = String | VirtualElement;\n\n  createElement : (String) =  VirtualElement;\n  createElement : (String, Attrs) =  VirtualElement;\n  createElement : (String, Attrs, Child...) =  VirtualElement;\n  render : (VirtualElement, DomElement) =  Void;\n}\n*/\nvar React = require('react');\n\n// All type safe!\nReact.render(\n  React.createElement('h1', null, 'Hello, world!'),\n  document.getElementById('.my-div')\n);", 
+            "title": "Integrating with Other JS Code"
+        }, 
+        {
+            "location": "/#interested", 
+            "text": "JS Zero is only in its design phase. If you find JS Zero interesting, we would love to hear your input!", 
+            "title": "Interested?"
+        }, 
+        {
+            "location": "/examples/", 
+            "text": "Motivating Examples\n\n\nSimple Array of Models\n\n\n// @type Person = { name: String, age: Number }\n\n// @assume fetchPeople : () =\n Promise(Array(Person), HttpError)\nfunction fetchPeople () {\n  return fetch('http://api.example.com/people');\n}\n\n// In this example fetchPeople is the anchor function, making\n// type annotations unnecessary for the rest of the program!\nfetchPeople()\n  .then(function(people) {\n    var names = people.map(p =\n p.name);\n    var ageSum = people.map(p =\n p.age).reduce(add);\n\n    // Won't pass: Person has no `hobby` property\n    // var hobbies = people.map(p =\n p.hobby);\n\n    // Creating an array in this fashion indicates a Tuple type.\n    return Array(names.length, ageSum);\n  })\n  .then(function([nameCount, ageSum]) {\n    console.log(\n# of names:\n, nameCount);\n    console.log(\nSum of ages:\n, ageSum);\n\n    // Won't pass: number is not a function\n    // ageSum()\n  });\n\nfunction add (x, y) { return x + y }", 
+            "title": "Examples"
+        }, 
+        {
+            "location": "/examples/#motivating-examples", 
+            "text": "", 
+            "title": "Motivating Examples"
+        }, 
+        {
+            "location": "/examples/#simple-array-of-models", 
+            "text": "// @type Person = { name: String, age: Number }\n\n// @assume fetchPeople : () =  Promise(Array(Person), HttpError)\nfunction fetchPeople () {\n  return fetch('http://api.example.com/people');\n}\n\n// In this example fetchPeople is the anchor function, making\n// type annotations unnecessary for the rest of the program!\nfetchPeople()\n  .then(function(people) {\n    var names = people.map(p =  p.name);\n    var ageSum = people.map(p =  p.age).reduce(add);\n\n    // Won't pass: Person has no `hobby` property\n    // var hobbies = people.map(p =  p.hobby);\n\n    // Creating an array in this fashion indicates a Tuple type.\n    return Array(names.length, ageSum);\n  })\n  .then(function([nameCount, ageSum]) {\n    console.log( # of names: , nameCount);\n    console.log( Sum of ages: , ageSum);\n\n    // Won't pass: number is not a function\n    // ageSum()\n  });\n\nfunction add (x, y) { return x + y }", 
+            "title": "Simple Array of Models"
+        }, 
+        {
+            "location": "/faq/", 
+            "text": "FAQ\n\n\nHow does JS Zero differ from Flowtype?\n\n\nHow does JS Zero differ from TypeScript?", 
+            "title": "Faq"
+        }, 
+        {
+            "location": "/faq/#faq", 
+            "text": "", 
+            "title": "FAQ"
+        }, 
+        {
+            "location": "/faq/#how-does-js-zero-differ-from-flowtype", 
+            "text": "", 
+            "title": "How does JS Zero differ from Flowtype?"
+        }, 
+        {
+            "location": "/faq/#how-does-js-zero-differ-from-typescript", 
+            "text": "", 
+            "title": "How does JS Zero differ from TypeScript?"
+        }, 
+        {
+            "location": "/spec/", 
+            "text": "Specification\n\n\nThis document specifies exactly what parts of ES6 will be included in the JS Zero subset, as well as the type declaration comment syntax.\n\n\nThis is a \nvery\n rough draft. Please see \nMotivating Examples\n first\n\n\nSpecific Features\n\n\nThis is the subset of features you will be able to write in JavaScript Zero:\n\n\n\n\nlet, var, const\n\n\nBasic types (objects, arrays, strings, numbers, booleans)\n\n\nFunctions - anonymous, declarations, arrow\n\n\nSymbols\n\n\nPromises\n\n\nMap / Set / WeakMap / WeakSet\n\n\nkeyword \nthis\n\n\nPrototypes via \nObject.create\n\n\n\n\nThese features will be \nomitted\n:\n\n\n\n\nNo classes, no keyword \nnew\n\n\nNo double equals \n==\n\n\n\n\nAnti-Goals\n\n\nHere are some things JS Zero is NOT trying to do:\n\n\n\n\nChange the existing behavior of JavaScript\n\n\nExplanation: If something doesn't fit, it should be \nremoved\n (but never changed)\n\n\nForce all code to be \npure\n\n\nExplanation: JavaScript is not designed to be a pure language. Forcing it to be so would not be worth the effort.\n\n\nRequire knowledge of advanced type-theory to effectively use JS Zero\n\n\nExplanation: JS Zero is designed to be used by the average JavaScript developer.\n\n\n\n\nType Declarations", 
+            "title": "Spec"
+        }, 
+        {
+            "location": "/spec/#specification", 
+            "text": "This document specifies exactly what parts of ES6 will be included in the JS Zero subset, as well as the type declaration comment syntax.", 
+            "title": "Specification"
+        }, 
+        {
+            "location": "/spec/#this-is-a-very-rough-draft-please-see-motivating-examples-first", 
+            "text": "", 
+            "title": "This is a very rough draft. Please see Motivating Examples first"
+        }, 
+        {
+            "location": "/spec/#specific-features", 
+            "text": "This is the subset of features you will be able to write in JavaScript Zero:   let, var, const  Basic types (objects, arrays, strings, numbers, booleans)  Functions - anonymous, declarations, arrow  Symbols  Promises  Map / Set / WeakMap / WeakSet  keyword  this  Prototypes via  Object.create   These features will be  omitted :   No classes, no keyword  new  No double equals  ==", 
+            "title": "Specific Features"
+        }, 
+        {
+            "location": "/spec/#anti-goals", 
+            "text": "Here are some things JS Zero is NOT trying to do:   Change the existing behavior of JavaScript  Explanation: If something doesn't fit, it should be  removed  (but never changed)  Force all code to be  pure  Explanation: JavaScript is not designed to be a pure language. Forcing it to be so would not be worth the effort.  Require knowledge of advanced type-theory to effectively use JS Zero  Explanation: JS Zero is designed to be used by the average JavaScript developer.", 
+            "title": "Anti-Goals"
+        }, 
+        {
+            "location": "/spec/#type-declarations", 
+            "text": "", 
+            "title": "Type Declarations"
+        }, 
+        {
+            "location": "/type-system/", 
+            "text": "Type System\n\n\nThis page aims to document the current set of ideas for the type system. JS Zero is early in its design phase, so expect this page to be in flux.\n\n\nIntersection and Union Types\n\n\nIntersection types seem to be the best way to express JavaScript as a type language. Both \nFlowtype\n and \nTypeScript\n have intersection types as a feature.\n\n\nPrototypes", 
+            "title": "Type system"
+        }, 
+        {
+            "location": "/type-system/#type-system", 
+            "text": "This page aims to document the current set of ideas for the type system. JS Zero is early in its design phase, so expect this page to be in flux.", 
+            "title": "Type System"
+        }, 
+        {
+            "location": "/type-system/#intersection-and-union-types", 
+            "text": "Intersection types seem to be the best way to express JavaScript as a type language. Both  Flowtype  and  TypeScript  have intersection types as a feature.", 
+            "title": "Intersection and Union Types"
+        }, 
+        {
+            "location": "/type-system/#prototypes", 
+            "text": "", 
+            "title": "Prototypes"
+        }
+    ]
+}

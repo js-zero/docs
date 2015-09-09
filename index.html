@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Zero bugs, Zero-hassle JavaScript.">
+        
+        
+        <link rel="shortcut icon" href="./img/favicon.ico">
+
+	<title>JS Zero</title>
+
+        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
+        <link href="./css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/highlight.css">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href=".">JS Zero</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li class="active">
+                        <a href=".">Home</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="examples/">Examples</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="faq/">Faq</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="spec/">Spec</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="type-system/">Type system</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li class="disabled">
+                        <a rel="next" >
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="examples/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+                    <li>
+                        <a href="https://github.com/js-zero/docs">
+                            
+                                <i class="fa fa-github"></i>
+                            
+                            GitHub
+                        </a>
+                    </li>
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#js-zero-zero-bugs-zero-hassle">JS Zero: Zero bugs, Zero hassle.</a></li>
+        
+            <li><a href="#vision-goals">Vision &amp; Goals</a></li>
+        
+            <li><a href="#motivating-example">Motivating Example</a></li>
+        
+            <li><a href="#integrating-with-other-js-code">Integrating with Other JS Code</a></li>
+        
+            <li><a href="#interested">Interested?</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="js-zero-zero-bugs-zero-hassle">JS Zero: Zero bugs, Zero hassle.</h1>
+<p><em>Current Status: Design phase. We need your input!</em></p>
+<p>JavaScript is getting more and more <strong>popular</strong> every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.</p>
+<p>Many different efforts have been made to create new, safter languages that compile <em>to</em> JavaScript. While many of these languages are designed very well, the fact is <strong>most people already know JavaScript</strong>, and are not so inclined to learn a new language to do the same things JavaScript can do.</p>
+<p>That's where this project comes in. <strong>JS Zero</strong> is a <strong>ES6-compatible, proper subset</strong> of JavaScript that aims to be functional and type-safe for doing I/O in web applications.</p>
+<h3 id="vision-goals">Vision &amp; Goals</h3>
+<pre><code class="text">
+  +--------------+        +---------------+        +--------------+
+  |  Input       |        |  JS Zero      |        |  Output      |
+  |  (HTTP)      |------&gt; |  (Valid ES6)  |------&gt; |  (JSON API)  |
+  |  (Database)  |        |  (type safe)  |        |  (HTML)      |
+  +--------------+        +---------------+        +--------------+
+
+</code></pre>
+
+<p>Much of programming in web development today is <strong>"data in, data out"</strong>. That is, given some data sources, we write programs to combine / aggregate / transform that data, then output the result.</p>
+<p>JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a <strong>compatible subset</strong> of the ubiquitous language of the web. This is made possible with three main goals:</p>
+<ul>
+<li>Specify a more strict, ES6-compatible, proper subset of JavaScript + CommonJS</li>
+<li>Design and build a type system that can type check this subset soundly</li>
+<li>As a developer tool, remain easy and seamless to use and understand.</li>
+</ul>
+<p>With these properties, JS Zero will help you significantly towards writing bug-free programs.</p>
+<h2 id="motivating-example">Motivating Example</h2>
+<p>Let's pretend you're making an app that allows a user to enter their <strong>GitHub username</strong> and receive back the <strong>total number of lines</strong> written across their repositories. This will involve using <a href="https://developer.github.com/v3/">GitHub's API</a>.</p>
+<p>At this point, JS Zero already provides <strong>a key feature</strong> to help us:</p>
+<ul>
+<li>We must <strong>declare the types</strong> of the data we will get from the GitHub API. This is a reasonable requirement, since there is no way JS Zero can infer what kind of data GitHub will return.</li>
+</ul>
+<p>Because JS Zero must be valid JavaScript, we must declare these types <strong>in comments</strong>. Here is what type declarations for the above example would like (notice the <code>@</code> symbols):</p>
+<pre><code class="javascript">// Although GitHub returns more data than this for a repo,
+// we only need to declare the types of data we care about.
+//
+// @type Repo = { id: Number, name: String, languages_url: String }
+// @type Languages = Map(String, Number)
+</code></pre>
+
+<p>As mentioned, the type of an API request cannot be inferred. That's ok; we can tell JS Zero to <strong>assume</strong> the type of a function instead of type checking the function's body. This means JS Zero will <strong>trust</strong> that our type declaration is correct.</p>
+<p>In our example, we tell JS Zero to <code>@assume</code> specific types for our API calls:</p>
+<pre><code class="javascript">// @assume fetchRepos : (String) =&gt; Promise(Array(Repo), HttpError)
+function fetchRepos (user) {
+  // Pretend `HTTP` is a library that returns a promise
+  return HTTP.get('http://api.github.com/users/' + user + '/repos');
+}
+
+// @assume fetchLangs : (String) =&gt; Promise(Languages, HttpError)
+function fetchLangs (languages_url) {
+
+  return HTTP.get(languages_url).then(function(langs) {
+    // Be careful! The above `@assume` means no type checking will be done for this code.
+    var keyValPairs = Object.keys(langs).map( k =&gt; [k, langs[k]] );
+    return new Map(keyValPairs);
+  })
+}
+</code></pre>
+
+<p>Now that we've declared the types of our HTTP requests, we can <strong>safely</strong> make use of them:</p>
+<pre><code class="javascript">// Note how there are NO TYPE DECLARATIONS in the following code!
+
+myFormElement.addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  fetchRepo(this.githubUsername.value)
+
+    .then(function(repos) {
+      // This line doesn't type check - r.language_url is not a property!
+      // var promises = repos.map(r =&gt; fetchLangs(r.language_url));
+
+      var promises = repos.map(r =&gt; fetchLangs(r.languages_url));
+      return Promise.all(promises);
+    })
+
+    .then(function(repoLanguages) {
+      // At this point, `repoLanguages` is an Array of Languages.
+      // In other words, it has the type Array( Map(String, Number) ).
+      // If that slipped by you, no problem. JS Zero has got you covered.
+
+      var totalLineCount = repoLanguages
+                           .map(langs =&gt; langs.values().reduce(add))
+                           .reduce(add)
+      ;
+      alert(&quot;You have written &quot; + totalLineCount + &quot; lines of code!&quot;);
+    })
+  ;
+});
+
+function add (x, y) { return x + y; }
+</code></pre>
+
+<p>As you can see, once you annotate your boundaries (HTTP in this case), no further type declarations are necessary. The idea is, you record the shape of your data once, and then safely forget about it.</p>
+<h2 id="integrating-with-other-js-code">Integrating with Other JS Code</h2>
+<p>Although all JS Zero code is valid JavaScript code, not all JavaScript code is valid Zero code. If you want your code to be type safe, sometimes you will have to annotate 3rd party libraries.</p>
+<p>As it turns out, <code>@assume</code> is an easy way to do this if you only need a function or two. For example, let's say you want to use the <a href="https://github.com/chjj/marked">marked</a> npm package to render some markdown:</p>
+<pre><code class="javascript">// @assume marked : (String) =&gt; String
+var marked = require('marked');
+console.log( marked('I am using __markdown__.') );
+</code></pre>
+
+<p>On the other hand, if you're importing a larger library, you might need to write annotations yourself (assuming someone else has not already). For example, if you want to use <a href="http://facebook.github.io/react/index.html">React.js</a> to handle your views, the type declarations might look something like this:</p>
+<pre><code class="javascript">/*
+@assume module 'react' {
+  type VirtualElement = new Type();
+  type Attrs = Object | Null;
+  type Child = String | VirtualElement;
+
+  createElement : (String) =&gt; VirtualElement;
+  createElement : (String, Attrs) =&gt; VirtualElement;
+  createElement : (String, Attrs, Child...) =&gt; VirtualElement;
+  render : (VirtualElement, DomElement) =&gt; Void;
+}
+*/
+var React = require('react');
+
+// All type safe!
+React.render(
+  React.createElement('h1', null, 'Hello, world!'),
+  document.getElementById('.my-div')
+);
+</code></pre>
+
+<h2 id="interested">Interested?</h2>
+<p>JS Zero is only in its design phase. If you find JS Zero interesting, we would love to hear your input!</p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="./js/jquery-1.10.2.min.js"></script>
+        <script src="./js/bootstrap-3.0.3.min.js"></script>
+        <script src="./js/highlight.pack.js"></script>
+        <script>var base_url = '.';</script>
+        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
+        <script src="./js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
+</html>
+
+<!--
+MkDocs version : 0.14.0
+Build Date UTC : 2015-09-09 05:56:41.999436
+-->
