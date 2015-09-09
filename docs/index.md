@@ -1,4 +1,6 @@
-# JS Zero: Zero bugs, Zero hassle.
+![JS Zero](img/logo-medium.png)
+
+# Zero bugs, Zero hassle.
 
 *Current Status: Design phase. We need your input!*
 

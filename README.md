@@ -1,4 +1,4 @@
-# JS Zero - Zero bugs, Zero hassle.
+![JS Zero](docs/img/logo-medium.png)
 
 **JS Zero** is a **ES6-compatible, proper subset** of JavaScript that aims to be functional and type-safe for doing I/O in web applications.
 
