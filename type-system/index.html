@@ -15,6 +15,7 @@
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="../css/highlight.css">
+        <link href="../theme.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -60,13 +61,13 @@
                 
                 
                     <li >
-                        <a href="../examples/">Examples</a>
+                        <a href="../FAQ/">FAQ</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="../faq/">Faq</a>
+                        <a href="../examples/">Examples</a>
                     </li>
                 
                 
@@ -127,6 +128,8 @@
         
             <li><a href="#intersection-and-union-types">Intersection and Union Types</a></li>
         
+            <li><a href="#primitive-types">Primitive types</a></li>
+        
             <li><a href="#prototypes">Prototypes</a></li>
         
     
@@ -135,10 +138,59 @@
                 <div class="col-md-9" role="main">
 
 <h1 id="type-system">Type System</h1>
-<p>This page aims to document the current set of ideas for the type system. JS Zero is early in its design phase, so expect this page to be in flux.</p>
+<p>This page aims to document the current set of <strong>ideas</strong> for the type system. JS Zero is early in its design phase, so expect this page to be in flux.</p>
+<p><strong>Everything on this page is up for discussion.</strong></p>
 <h2 id="intersection-and-union-types">Intersection and Union Types</h2>
-<p>Intersection types seem to be the best way to express JavaScript as a type language. Both <a href="http://flowtype.org/">Flowtype</a> and <a href="http://www.typescriptlang.org/">TypeScript</a> have intersection types as a feature.</p>
-<h2 id="prototypes">Prototypes</h2></div>
+<p><strong>Intersection types</strong> seems to be the best way to express a type system for JavaScript. This is because everything in JavaScript is an object, <strong>in addition</strong> to its own type (e.g. a function is also an object).</p>
+<p>Library writers often take advantage of this fact. For example, jQuery's global variable is both a function and an object:</p>
+<pre><code class="javascript">$('button');
+$.ajax({ type: 'GET', url: 'http://api.example.com' });
+</code></pre>
+
+<p>With intersection types, you can express this relationship by intersecting two completely different types. For example:</p>
+<pre><code class="javascript">// @type JQueryCallable = (String) =&gt; JQueryObject
+// @type JQueryAjax     = { ajax: (Object) =&gt; JQueryDeferred }
+
+// @assume $ : JQueryCallable &amp; JQueryAjax
+$('button');
+$.ajax({ type: 'GET', url: 'http://api.example.com' });
+</code></pre>
+
+<p>Both <a href="http://flowtype.org/">Flowtype</a> and <a href="http://www.typescriptlang.org/">TypeScript</a> have intersection types as a feature.</p>
+<h2 id="primitive-types">Primitive types</h2>
+<ul>
+<li>Booleans</li>
+<li>Numbers</li>
+<li>Strings</li>
+<li>Objects</li>
+<li>Arrays</li>
+<li>Maps</li>
+<li>Sets</li>
+<li>Functions</li>
+</ul>
+<h2 id="prototypes">Prototypes</h2>
+<p>A core feature of JavaScript is that every type has a inherited prototype of methods. Any value of a type can call that type's prototype methods.</p>
+<p>The most useful case of this is when working with arrays:</p>
+<pre><code class="javascript">var data = [10,20,30];
+data.map(x =&gt; x * 2).reduce(add);
+
+function add (x, y) { return x + y; }
+</code></pre>
+
+<p>Because <code>data</code> has type <code>Array</code>, it can call any methods on <code>Array.prototype</code>. The type system is aware of this and allows <code>data</code> to run both the <code>map</code> and <code>reduce</code> methods.</p>
+<p>If we were to manually declare part of the <code>Array</code> type, it might look something like this:</p>
+<pre><code class="javascript">/*
+@newtype Array(t);
+@assume  Array(t).prototype : {
+  map:    ((t) =&gt; returnType) =&gt; Array(returnType),
+  reduce: ((t, t) =&gt; t) =&gt; t,
+  reduce: ((acc, t) =&gt; acc, acc) =&gt; acc
+};
+*/
+</code></pre>
+
+<h3 id="implementation-approach">Implementation Approach</h3>
+<p>At first, the type system will not have the responsibility of inferring prototype methods. Instead, we will annotate the primitive types manually. The idea is we encourage developers to use primitives as much as possible, and use plain functions when creating their own data structures. If necessary, and if possible, we can add prototype inference later.</p></div>
             
         </div>
 

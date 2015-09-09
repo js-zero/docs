@@ -15,6 +15,7 @@
         <link href="../css/font-awesome-4.0.3.css" rel="stylesheet">
         <link href="../css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="../css/highlight.css">
+        <link href="../theme.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -59,14 +60,14 @@
                 
                 
                 
-                    <li class="active">
-                        <a href="./">Examples</a>
+                    <li >
+                        <a href="../FAQ/">FAQ</a>
                     </li>
                 
                 
                 
-                    <li >
-                        <a href="../faq/">Faq</a>
+                    <li class="active">
+                        <a href="./">Examples</a>
                     </li>
                 
                 
@@ -93,12 +94,12 @@
                 </li>
                 
                     <li >
-                        <a rel="next" href="..">
+                        <a rel="next" href="../FAQ/">
                             <i class="fa fa-arrow-left"></i> Previous
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="../faq/">
+                        <a rel="prev" href="../spec/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -138,11 +139,10 @@
 
 // @assume fetchPeople : () =&gt; Promise(Array(Person), HttpError)
 function fetchPeople () {
-  return fetch('http://api.example.com/people');
+  return HTTP.get('http://api.example.com/people');
 }
 
-// In this example fetchPeople is the anchor function, making
-// type annotations unnecessary for the rest of the program!
+// Here we safely use fetchPeople without the need for further type annotations.
 fetchPeople()
   .then(function(people) {
     var names = people.map(p =&gt; p.name);

@@ -15,6 +15,7 @@
         <link href="./css/font-awesome-4.0.3.css" rel="stylesheet">
         <link href="./css/base.css" rel="stylesheet">
         <link rel="stylesheet" href="./css/highlight.css">
+        <link href="./theme.css" rel="stylesheet">
 
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!--[if lt IE 9]>
@@ -60,13 +61,13 @@
                 
                 
                     <li >
-                        <a href="examples/">Examples</a>
+                        <a href="FAQ/">FAQ</a>
                     </li>
                 
                 
                 
                     <li >
-                        <a href="faq/">Faq</a>
+                        <a href="examples/">Examples</a>
                     </li>
                 
                 
@@ -98,7 +99,7 @@
                         </a>
                     </li>
                     <li >
-                        <a rel="prev" href="examples/">
+                        <a rel="prev" href="FAQ/">
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
@@ -123,7 +124,9 @@
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
     
-        <li class="main active"><a href="#js-zero-zero-bugs-zero-hassle">JS Zero: Zero bugs, Zero hassle.</a></li>
+        <li class="main active"><a href="#zero-bugs-zero-hassle">Zero bugs, Zero hassle.</a></li>
+        
+            <li><a href="#why-js-zero">Why JS Zero?</a></li>
         
             <li><a href="#vision-goals">Vision &amp; Goals</a></li>
         
@@ -138,12 +141,13 @@
 </div></div>
                 <div class="col-md-9" role="main">
 
-<h1 id="js-zero-zero-bugs-zero-hassle">JS Zero: Zero bugs, Zero hassle.</h1>
+<p><img alt="JS Zero" src="./img/logo-medium.png" /></p>
+<h1 id="zero-bugs-zero-hassle">Zero bugs, Zero hassle.</h1>
 <p><em>Current Status: Design phase. We need your input!</em></p>
-<p>JavaScript is getting more and more <strong>popular</strong> every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.</p>
-<p>Many different efforts have been made to create new, safter languages that compile <em>to</em> JavaScript. While many of these languages are designed very well, the fact is <strong>most people already know JavaScript</strong>, and are not so inclined to learn a new language to do the same things JavaScript can do.</p>
-<p>That's where this project comes in. <strong>JS Zero</strong> is a <strong>ES6-compatible, proper subset</strong> of JavaScript that aims to be functional and type-safe for doing I/O in web applications.</p>
-<h3 id="vision-goals">Vision &amp; Goals</h3>
+<p>JavaScript is getting more and more popular every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.</p>
+<p>Many efforts have been made to create new, safter languages that compile <em>to</em> JavaScript. While many of these languages are designed very well, the fact is <strong>most people already know JavaScript</strong>, and are not so inclined to learn a new language to do the same things JavaScript can do.</p>
+<p><strong>JS Zero</strong> is a <strong>ES6-compatible, proper subset</strong> of JavaScript that aims to be functional and type-safe for doing I/O in web applications.</p>
+<h2 id="why-js-zero">Why JS Zero?</h2>
 <pre><code class="text">
   +--------------+        +---------------+        +--------------+
   |  Input       |        |  JS Zero      |        |  Output      |
@@ -154,13 +158,15 @@
 </code></pre>
 
 <p>Much of programming in web development today is <strong>"data in, data out"</strong>. That is, given some data sources, we write programs to combine / aggregate / transform that data, then output the result.</p>
-<p>JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a <strong>compatible subset</strong> of the ubiquitous language of the web. This is made possible with three main goals:</p>
+<p>JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a <strong>compatible subset</strong> of the ubiquitous language of the web.</p>
+<h2 id="vision-goals">Vision &amp; Goals</h2>
+<p>JS Zero has three main goals:</p>
 <ul>
-<li>Specify a more strict, ES6-compatible, proper subset of JavaScript + CommonJS</li>
+<li>Specify a stricter, ES6-compatible, proper subset of JavaScript</li>
 <li>Design and build a type system that can type check this subset soundly</li>
 <li>As a developer tool, remain easy and seamless to use and understand.</li>
 </ul>
-<p>With these properties, JS Zero will help you significantly towards writing bug-free programs.</p>
+<p>With these goals complete, JS Zero will help you significantly towards writing bug-free programs.</p>
 <h2 id="motivating-example">Motivating Example</h2>
 <p>Let's pretend you're making an app that allows a user to enter their <strong>GitHub username</strong> and receive back the <strong>total number of lines</strong> written across their repositories. This will involve using <a href="https://developer.github.com/v3/">GitHub's API</a>.</p>
 <p>At this point, JS Zero already provides <strong>a key feature</strong> to help us:</p>
@@ -168,7 +174,7 @@
 <li>We must <strong>declare the types</strong> of the data we will get from the GitHub API. This is a reasonable requirement, since there is no way JS Zero can infer what kind of data GitHub will return.</li>
 </ul>
 <p>Because JS Zero must be valid JavaScript, we must declare these types <strong>in comments</strong>. Here is what type declarations for the above example would like (notice the <code>@</code> symbols):</p>
-<pre><code class="javascript">// Although GitHub returns more data than this for a repo,
+<pre><code class="javascript">// Although GitHub returns much more data,
 // we only need to declare the types of data we care about.
 //
 // @type Repo = { id: Number, name: String, languages_url: String }
@@ -238,10 +244,10 @@ console.log( marked('I am using __markdown__.') );
 
 <p>On the other hand, if you're importing a larger library, you might need to write annotations yourself (assuming someone else has not already). For example, if you want to use <a href="http://facebook.github.io/react/index.html">React.js</a> to handle your views, the type declarations might look something like this:</p>
 <pre><code class="javascript">/*
-@assume module 'react' {
-  type VirtualElement = new Type();
-  type Attrs = Object | Null;
-  type Child = String | VirtualElement;
+@module React 'react' {
+  @newtype VirtualElement;
+  @type Attrs = Object | Null;
+  @type Child = String | VirtualElement;
 
   createElement : (String) =&gt; VirtualElement;
   createElement : (String, Attrs) =&gt; VirtualElement;
@@ -259,7 +265,7 @@ React.render(
 </code></pre>
 
 <h2 id="interested">Interested?</h2>
-<p>JS Zero is only in its design phase. If you find JS Zero interesting, we would love to hear your input!</p></div>
+<p>JS Zero is only in its design phase. If you find JS Zero interesting, we would love to have your valuable input!</p></div>
             
         </div>
 
@@ -306,5 +312,5 @@ React.render(
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-09-09 05:56:41.999436
+Build Date UTC : 2015-09-09 22:58:20.497545
 -->
