@@ -127,7 +127,7 @@
     
         <li class="main active"><a href="#specification">Specification</a></li>
         
-            <li><a href="#this-is-a-very-rough-draft-please-see-motivating-examples-first">This is a very rough draft. Please see Motivating Examples first</a></li>
+            <li><a href="#this-is-a-very-rough-draft-please-see-discussion-threads-for-latest-details">This is a very rough draft. Please see discussion threads for latest details.</a></li>
         
             <li><a href="#goals">Goals</a></li>
         
@@ -144,7 +144,7 @@
 
 <h1 id="specification">Specification</h1>
 <p>This document specifies exactly what parts of ES6 will be included in the JS Zero subset, as well as type declaration syntax and usage.</p>
-<h3 id="this-is-a-very-rough-draft-please-see-motivating-examples-first">This is a <em>very</em> rough draft. Please see <a href="../examples">Motivating Examples</a> first</h3>
+<h3 id="this-is-a-very-rough-draft-please-see-discussion-threads-for-latest-details">This is a <em>very</em> rough draft. Please see discussion threads for latest details.</h3>
 <h2 id="goals">Goals</h2>
 <ul>
 <li>Stay close to primitive types</li>
@@ -152,6 +152,7 @@
 <li>Only require type annotations at <strong>boundaries</strong></li>
 <li>Database queries, HTTP requests, etc.</li>
 </ul>
+<p><a href="http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13">[Discuss these goals]</a></p>
 <h2 id="anti-goals">Anti-Goals</h2>
 <p>Here are some things JS Zero is NOT trying to do:</p>
 <ul>
@@ -162,8 +163,9 @@
 <li>Require knowledge of advanced type-theory to effectively use JS Zero</li>
 <li>Explanation: JS Zero is designed to be used by the average JavaScript developer.</li>
 </ul>
+<p><a href="http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13">[Discuss these anti-goals]</a></p>
 <h2 id="specific-features">Specific Features</h2>
-<p>This is the subset of features you will be able to write in JavaScript Zero:</p>
+<p>(incomplete) This is the subset of features you will be able to write in JavaScript Zero:</p>
 <ul>
 <li>let, var, const</li>
 <li>Basic types (objects, arrays, strings, numbers, booleans)</li>
@@ -178,8 +180,10 @@
 <li>No classes, no keyword <code>new</code></li>
 <li>No double equals <code>==</code></li>
 </ul>
+<p><a href="http://discuss.js-zero.com/t/what-subset-of-features-will-js-zero-support/19">[Discuss this subset of features]</a></p>
 <h2 id="types-and-type-declarations">Types and Type Declarations</h2>
 <p>Type declarations are written in comments to keep JS Zero ES6-compatible.</p>
+<p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1">[Discuss type declarations]</a></p>
 <h3 id="type-aliases">Type Aliases</h3>
 <p>To declare a type alias, use the <code>@type</code> declaration. This creates an alias that is no different than the type you set it to.</p>
 <pre><code class="javascript">// @type Venue = { name: String, rating: Number }
@@ -230,7 +234,8 @@ function fetchPets (minHappiness) {
 var $ = require('jquery');
 </code></pre>
 
-<p>In the above example, the <code>JQuery</code> part of <code>@module JQuery</code> is the name of the type, while the [optional] <code>'jquery'</code> part is the string name you pass into <code>require</code>.</p></div>
+<p>In the above example, the <code>JQuery</code> part of <code>@module JQuery</code> is the name of the type, while the [optional] <code>'jquery'</code> part is the string name you pass into <code>require</code>.</p>
+<p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1">[Discuss type declarations]</a></p></div>
             
         </div>
 
