@@ -2,7 +2,7 @@
 
 This document specifies exactly what parts of ES6 will be included in the JS Zero subset, as well as type declaration syntax and usage.
 
-### This is a *very* rough draft. Please see [Motivating Examples](/examples) first
+### This is a *very* rough draft. Please see discussion threads for latest details.
 
 ## Goals
 
@@ -10,6 +10,8 @@ This document specifies exactly what parts of ES6 will be included in the JS Zer
   - Objects, arrays, functions, strings, numbers, booleans, maps, and sets should cover almost all use cases.
 - Only require type annotations at **boundaries**
   - Database queries, HTTP requests, etc.
+
+[[Discuss these goals]](http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13)
 
 ## Anti-Goals
 
@@ -22,9 +24,11 @@ Here are some things JS Zero is NOT trying to do:
 - Require knowledge of advanced type-theory to effectively use JS Zero
   - Explanation: JS Zero is designed to be used by the average JavaScript developer.
 
+[[Discuss these anti-goals]](http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13)
+
 ## Specific Features
 
-This is the subset of features you will be able to write in JavaScript Zero:
+(incomplete) This is the subset of features you will be able to write in JavaScript Zero:
 
 - let, var, const
 - Basic types (objects, arrays, strings, numbers, booleans)
@@ -39,9 +43,13 @@ These features will be **omitted**:
 - No classes, no keyword `new`
 - No double equals `==`
 
+[[Discuss this subset of features]](http://discuss.js-zero.com/t/what-subset-of-features-will-js-zero-support/19)
+
 ## Types and Type Declarations
 
 Type declarations are written in comments to keep JS Zero ES6-compatible.
+
+[[Discuss type declarations]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1)
 
 ### Type Aliases
 
@@ -110,3 +118,5 @@ var $ = require('jquery');
 ```
 
 In the above example, the `JQuery` part of `@module JQuery` is the name of the type, while the [optional] `'jquery'` part is the string name you pass into `require`.
+
+[[Discuss type declarations]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1)

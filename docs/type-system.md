@@ -2,9 +2,9 @@
 
 This page aims to document the current set of **ideas** for the type system. JS Zero is early in its design phase, so expect this page to be in flux.
 
-**Everything on this page is up for discussion.**
+To reiterate, **everything on this page is up for discussion.**
 
-## Intersection and Union Types
+## Intersection Types
 
 **Intersection types** seems to be the best way to express a type system for JavaScript. This is because everything in JavaScript is an object, **in addition** to its own type (e.g. a function is also an object).
 
@@ -27,6 +27,8 @@ $.ajax({ type: 'GET', url: 'http://api.example.com' });
 ```
 
 Both [Flowtype](http://flowtype.org/) and [TypeScript](http://www.typescriptlang.org/) have intersection types as a feature.
+
+[[Discuss intersection types]](http://discuss.js-zero.com/t/intersection-types/17)
 
 ## Primitive types
 
@@ -67,6 +69,8 @@ If we were to manually declare part of the `Array` type, it might look something
 */
 ```
 
-### Implementation Approach
+### Implementation Approach (idea)
 
 At first, the type system will not have the responsibility of inferring prototype methods. Instead, we will annotate the primitive types manually. The idea is we encourage developers to use primitives as much as possible, and use plain functions when creating their own data structures. If necessary, and if possible, we can add prototype inference later.
+
+[[Discuss typing prototypes]](http://discuss.js-zero.com/t/typing-prototypes/18/1)
