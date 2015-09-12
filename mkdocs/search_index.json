@@ -36,26 +36,6 @@
             "title": "Interested?"
         }, 
         {
-            "location": "/FAQ/", 
-            "text": "FAQ\n\n\nHow does JS Zero differ from TypeScript?\n\n\nTypeScript aims to be a \nsuperset\n of JavaScript, while JS Zero aims to be a \nsubset\n. This means TypeScript \nextends\n the JS language, while JS Zero \nrefines\n the language by removing features that are hard to check for correctness.\n\n\nHow does JS Zero differ from Flowtype?\n\n\nFlowtype and JS Zero are indeed very similar. However, Flowtype aims to type check the \nentire JavaScript language\n. Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a \nsubset\n of JavaScript that can be type checked \nsoundly\n.", 
-            "title": "FAQ"
-        }, 
-        {
-            "location": "/FAQ/#faq", 
-            "text": "", 
-            "title": "FAQ"
-        }, 
-        {
-            "location": "/FAQ/#how-does-js-zero-differ-from-typescript", 
-            "text": "TypeScript aims to be a  superset  of JavaScript, while JS Zero aims to be a  subset . This means TypeScript  extends  the JS language, while JS Zero  refines  the language by removing features that are hard to check for correctness.", 
-            "title": "How does JS Zero differ from TypeScript?"
-        }, 
-        {
-            "location": "/FAQ/#how-does-js-zero-differ-from-flowtype", 
-            "text": "Flowtype and JS Zero are indeed very similar. However, Flowtype aims to type check the  entire JavaScript language . Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a  subset  of JavaScript that can be type checked  soundly .", 
-            "title": "How does JS Zero differ from Flowtype?"
-        }, 
-        {
             "location": "/examples/", 
             "text": "Motivating Examples\n\n\nSimple Array of Models\n\n\n// @type Person = { name: String, age: Number }\n\n// @assume fetchPeople : () =\n Promise(Array(Person), HttpError)\nfunction fetchPeople () {\n  return HTTP.get('http://api.example.com/people');\n}\n\n// Here we safely use fetchPeople without the need for further type annotations.\nfetchPeople()\n  .then(function(people) {\n    var names = people.map(p =\n p.name);\n    var ageSum = people.map(p =\n p.age).reduce(add);\n\n    // Won't pass: Person has no `hobby` property\n    // var hobbies = people.map(p =\n p.hobby);\n\n    // Creating an array in this fashion indicates a Tuple type.\n    return Array(names.length, ageSum);\n  })\n  .then(function([nameCount, ageSum]) {\n    console.log(\n# of names:\n, nameCount);\n    console.log(\nSum of ages:\n, ageSum);\n\n    // Won't pass: number is not a function\n    // ageSum()\n  });\n\nfunction add (x, y) { return x + y }", 
             "title": "Examples"
@@ -69,6 +49,26 @@
             "location": "/examples/#simple-array-of-models", 
             "text": "// @type Person = { name: String, age: Number }\n\n// @assume fetchPeople : () =  Promise(Array(Person), HttpError)\nfunction fetchPeople () {\n  return HTTP.get('http://api.example.com/people');\n}\n\n// Here we safely use fetchPeople without the need for further type annotations.\nfetchPeople()\n  .then(function(people) {\n    var names = people.map(p =  p.name);\n    var ageSum = people.map(p =  p.age).reduce(add);\n\n    // Won't pass: Person has no `hobby` property\n    // var hobbies = people.map(p =  p.hobby);\n\n    // Creating an array in this fashion indicates a Tuple type.\n    return Array(names.length, ageSum);\n  })\n  .then(function([nameCount, ageSum]) {\n    console.log( # of names: , nameCount);\n    console.log( Sum of ages: , ageSum);\n\n    // Won't pass: number is not a function\n    // ageSum()\n  });\n\nfunction add (x, y) { return x + y }", 
             "title": "Simple Array of Models"
+        }, 
+        {
+            "location": "/faq/", 
+            "text": "FAQ\n\n\nHow does JS Zero differ from TypeScript?\n\n\nTypeScript aims to be a \nsuperset\n of JavaScript, while JS Zero aims to be a \nsubset\n. This means TypeScript \nextends\n the JS language, while JS Zero \nrefines\n the language by removing features that are hard to check for correctness.\n\n\nHow does JS Zero differ from Flowtype?\n\n\nFlowtype and JS Zero are indeed very similar. However, Flowtype aims to type check the \nentire JavaScript language\n. Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a \nsubset\n of JavaScript that can be type checked \nsoundly\n.", 
+            "title": "Faq"
+        }, 
+        {
+            "location": "/faq/#faq", 
+            "text": "", 
+            "title": "FAQ"
+        }, 
+        {
+            "location": "/faq/#how-does-js-zero-differ-from-typescript", 
+            "text": "TypeScript aims to be a  superset  of JavaScript, while JS Zero aims to be a  subset . This means TypeScript  extends  the JS language, while JS Zero  refines  the language by removing features that are hard to check for correctness.", 
+            "title": "How does JS Zero differ from TypeScript?"
+        }, 
+        {
+            "location": "/faq/#how-does-js-zero-differ-from-flowtype", 
+            "text": "Flowtype and JS Zero are indeed very similar. However, Flowtype aims to type check the  entire JavaScript language . Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a  subset  of JavaScript that can be type checked  soundly .", 
+            "title": "How does JS Zero differ from Flowtype?"
         }, 
         {
             "location": "/spec/", 
