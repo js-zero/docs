@@ -6,7 +6,7 @@
 
 JavaScript is getting more and more popular every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.
 
-Many efforts have been made to create new, safter languages that compile *to* JavaScript. While many of these languages are designed very well, the fact is **most people already know JavaScript**, and are not so inclined to learn a new language to do the same things JavaScript can do.
+Many efforts have been made to create new, safer languages that compile *to* JavaScript. While many of these languages are designed very well, the fact is **most people already know JavaScript**, and are not so inclined to learn a new language to do the same things JavaScript can do.
 
 **JS Zero** is a **ES6-compatible, proper subset** of JavaScript that aims to be functional and type-safe for doing I/O in web applications. [[Discuss this point]](http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13)
 
@@ -164,6 +164,8 @@ React.render(
 
 ## Interested?
 
-JS Zero is only in its design phase. If you find JS Zero interesting, we would love to have your valuable input!
+JS Zero is only in its design phase. If want JS Zero to happen, here are some ways you can help:
 
-[See all discussion topics here.](http://discuss.js-zero.com/)
+- Star the [GitHub repo](https://github.com/js-zero/docs),
+- Help spread the word with a [retweet](https://twitter.com/mindeavor/status/642722237452152832), or a [tweet of your own](https://twitter.com/intent/tweet?text=Help%20build%20a%20safer%20JavaScript%20with%20JS%20Zero!%20http%3A%2F%2Fjs-zero.com%2F),
+- Or [join the discussion](http://discuss.js-zero.com/) and influence the direction of the project!
