@@ -168,4 +168,5 @@ JS Zero is only in its design phase. If want JS Zero to happen, here are some wa
 
 - Star the [GitHub repo](https://github.com/js-zero/docs),
 - Help spread the word with a [retweet](https://twitter.com/mindeavor/status/642722237452152832), or a [tweet of your own](https://twitter.com/intent/tweet?text=Help%20build%20a%20safer%20JavaScript%20with%20JS%20Zero!%20http%3A%2F%2Fjs-zero.com%2F),
-- Or [join the discussion](http://discuss.js-zero.com/) and influence the direction of the project!
+- **Show your support / interest** by making a quick post [to this thread](http://discuss.js-zero.com/t/show-your-support/20) (easy GitHub login)
+- Or [join the detailed discussion](http://discuss.js-zero.com/) and influence the direction of the project!
