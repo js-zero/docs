@@ -52,7 +52,7 @@
         }, 
         {
             "location": "/faq/", 
-            "text": "FAQ\n\n\nHow does JS Zero differ from TypeScript?\n\n\nTypeScript aims to be a \nsuperset\n of JavaScript, while JS Zero aims to be a \nsubset\n. This means TypeScript \nextends\n the JS language, while JS Zero \nrefines\n the language by removing features that are hard to check for correctness.\n\n\nHow does JS Zero differ from Flowtype?\n\n\nFlowtype and JS Zero are indeed very similar. However, Flowtype aims to type check the \nentire JavaScript language\n. Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a \nsubset\n of JavaScript that can be type checked \nsoundly\n.", 
+            "text": "FAQ\n\n\nHow does JS Zero differ from TypeScript?\n\n\nTypeScript\n aims to be a \nsuperset\n of JavaScript, while JS Zero aims to be a \nsubset\n. This means TypeScript \nextends\n the JS language, while JS Zero \nrefines\n the language by removing features that are hard to check for correctness.\n\n\nHow does JS Zero differ from Flowtype?\n\n\nFlowtype\n and JS Zero are indeed very similar. However, Flowtype aims to type check the \nentire JavaScript language\n. Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a \nsubset\n of JavaScript that can be type checked \nsoundly\n.", 
             "title": "Faq"
         }, 
         {
@@ -62,12 +62,12 @@
         }, 
         {
             "location": "/faq/#how-does-js-zero-differ-from-typescript", 
-            "text": "TypeScript aims to be a  superset  of JavaScript, while JS Zero aims to be a  subset . This means TypeScript  extends  the JS language, while JS Zero  refines  the language by removing features that are hard to check for correctness.", 
+            "text": "TypeScript  aims to be a  superset  of JavaScript, while JS Zero aims to be a  subset . This means TypeScript  extends  the JS language, while JS Zero  refines  the language by removing features that are hard to check for correctness.", 
             "title": "How does JS Zero differ from TypeScript?"
         }, 
         {
             "location": "/faq/#how-does-js-zero-differ-from-flowtype", 
-            "text": "Flowtype and JS Zero are indeed very similar. However, Flowtype aims to type check the  entire JavaScript language . Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a  subset  of JavaScript that can be type checked  soundly .", 
+            "text": "Flowtype  and JS Zero are indeed very similar. However, Flowtype aims to type check the  entire JavaScript language . Unfortunately, JavaScript as a whole is too dynamic for Flowtype to achieve full type safety. JS Zero aims to specify a  subset  of JavaScript that can be type checked  soundly .", 
             "title": "How does JS Zero differ from Flowtype?"
         }, 
         {
