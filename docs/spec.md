@@ -132,6 +132,19 @@ function fetchPets (minHappiness) {
 }
 ```
 
+### Ensures
+
+Although not required, you can annotate any JS Zero function using `@ensure` and force the type system to **enforce** the function follows the type you specify.
+
+```javascript
+// @ensure multiplyString : (Number, String) => String
+function multiplyString (times, str) {
+  return new Array(times).fill(str); // oops, forgot to join the strings together!
+}
+```
+
+In the above example, JS Zero would normally infer has the type `(Number, String) => Array(String)` for `multiplyString` (see docs for [Array.fill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)). However, since we annotated our intended type with `@ensure`, JS Zero will instead throw a type error :)
+
 ### New Types
 
 To declare an entirely new type, use the `@newtype` declaration. This is useful for creating opaque types when declaring modules (explained in the next section).
