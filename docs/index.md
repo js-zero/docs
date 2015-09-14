@@ -24,7 +24,7 @@ Many efforts have been made to create new, safer languages that compile *to* Jav
 
 Much of programming in web development today is **"data in, data out"**. That is, given some data sources, we write programs to combine / aggregate / transform that data, then output the result.
 
-JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a **compatible subset** of the ubiquitous language of the web.
+JavaScript Zero fills this niche; it tries to make writing such programs bug-free, using a **typesafe, compatible subset** of the ubiquitous language of the web.
 
 ## Vision & Goals
 
