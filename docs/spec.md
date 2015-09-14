@@ -45,11 +45,71 @@ These features will be **omitted**:
 
 [[Discuss this subset of features]](http://discuss.js-zero.com/t/what-subset-of-features-will-js-zero-support/19)
 
-## Types and Type Declarations
+## Built-in Types
+
+JS Zero several basic types...
+
+```
+String
+Number
+Boolean
+Object
+Function
+Symbol
+```
+
+...and several higher-kinded types...
+
+```
+Array(elem)
+Promise(resolved, rejected)
+Map(key, value)
+Set(elem)
+```
+
+## Type Annotation Syntax
+
+Here are some examples of type annotations:
+
+```javascript
+// @ensure num : Number
+var num = 101;
+
+// @ensure str : String
+var str = "hello";
+
+// @ensure nums : Array(Number)
+var nums = [10, 20];
+
+// @ensure obj : { x: Number, y: String }
+var obj = { x: 11, y: 'twenty-two' }
+
+// @ensure inc : (Number) => Number
+function inc (num) {
+  return num + 1;
+}
+
+// @ensure add : (Number, Number) => Number
+function add (x, y) {
+  return x + y + 1;
+}
+
+// @ensure favFoods : () => Array(String)
+function favFoods () {
+  return ['bananas', 'cherries', 'potatoes'];
+}
+
+// @ensure wrap : (x) => Array(x)
+function wrap (value) {
+  return [value];
+}
+```
+
+The key point to recognize is that a function type annotation takes the form `(inputs...) => output`. This is very similar to [ES6 arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions), except parenthesis around the inputs are required.
+
+## Type Declarations
 
 Type declarations are written in comments to keep JS Zero ES6-compatible.
-
-[[Discuss type declarations]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1)
 
 ### Type Aliases
 
