@@ -135,7 +135,11 @@
         
             <li><a href="#specific-features">Specific Features</a></li>
         
-            <li><a href="#types-and-type-declarations">Types and Type Declarations</a></li>
+            <li><a href="#built-in-types">Built-in Types</a></li>
+        
+            <li><a href="#type-annotation-syntax">Type Annotation Syntax</a></li>
+        
+            <li><a href="#type-declarations">Type Declarations</a></li>
         
     
     </ul>
@@ -181,9 +185,61 @@
 <li>No double equals <code>==</code></li>
 </ul>
 <p><a href="http://discuss.js-zero.com/t/what-subset-of-features-will-js-zero-support/19">[Discuss this subset of features]</a></p>
-<h2 id="types-and-type-declarations">Types and Type Declarations</h2>
+<h2 id="built-in-types">Built-in Types</h2>
+<p>JS Zero several basic types...</p>
+<pre><code>String
+Number
+Boolean
+Object
+Function
+Symbol
+</code></pre>
+
+<p>...and several higher-kinded types...</p>
+<pre><code>Array(elem)
+Promise(resolved, rejected)
+Map(key, value)
+Set(elem)
+</code></pre>
+
+<h2 id="type-annotation-syntax">Type Annotation Syntax</h2>
+<p>Here are some examples of type annotations:</p>
+<pre><code class="javascript">// @ensure num : Number
+var num = 101;
+
+// @ensure str : String
+var str = &quot;hello&quot;;
+
+// @ensure nums : Array(Number)
+var nums = [10, 20];
+
+// @ensure obj : { x: Number, y: String }
+var obj = { x: 11, y: 'twenty-two' }
+
+// @ensure inc : (Number) =&gt; Number
+function inc (num) {
+  return num + 1;
+}
+
+// @ensure add : (Number, Number) =&gt; Number
+function add (x, y) {
+  return x + y + 1;
+}
+
+// @ensure favFoods : () =&gt; Array(String)
+function favFoods () {
+  return ['bananas', 'cherries', 'potatoes'];
+}
+
+// @ensure wrap : (x) =&gt; Array(x)
+function wrap (value) {
+  return [value];
+}
+</code></pre>
+
+<p>The key point to recognize is that a function type annotation takes the form <code>(inputs...) =&gt; output</code>. This is very similar to <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions">ES6 arrow functions</a>, except parenthesis around the inputs are required.</p>
+<h2 id="type-declarations">Type Declarations</h2>
 <p>Type declarations are written in comments to keep JS Zero ES6-compatible.</p>
-<p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1">[Discuss type declarations]</a></p>
 <h3 id="type-aliases">Type Aliases</h3>
 <p>To declare a type alias, use the <code>@type</code> declaration. This creates an alias that is no different than the type you set it to.</p>
 <pre><code class="javascript">// @type Venue = { name: String, rating: Number }
@@ -199,6 +255,15 @@ function fetchPets (minHappiness) {
 }
 </code></pre>
 
+<h3 id="ensures">Ensures</h3>
+<p>Although not required, you can annotate any JS Zero function using <code>@ensure</code> and force the type system to <strong>enforce</strong> the function follows the type you specify.</p>
+<pre><code class="javascript">// @ensure multiplyString : (Number, String) =&gt; String
+function multiplyString (times, str) {
+  return new Array(times).fill(str); // oops, forgot to join the strings together!
+}
+</code></pre>
+
+<p>In the above example, JS Zero would normally infer has the type <code>(Number, String) =&gt; Array(String)</code> for <code>multiplyString</code> (see docs for <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill">Array.fill</a>). However, since we annotated our intended type with <code>@ensure</code>, JS Zero will instead throw a type error :)</p>
 <h3 id="new-types">New Types</h3>
 <p>To declare an entirely new type, use the <code>@newtype</code> declaration. This is useful for creating opaque types when declaring modules (explained in the next section).</p>
 <p>For example, here is how you create an opaque type:</p>
