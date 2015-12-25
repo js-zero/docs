@@ -72,61 +72,66 @@ Set(elem)
 Here are some examples of type annotations:
 
 ```javascript
-// @ensure num : Number
+$ensure `num : Number`
 var num = 101;
 
-// @ensure str : String
+$ensure `str : String`
 var str = "hello";
 
-// @ensure nums : Array(Number)
+$ensure `nums : Array(Number)`
 var nums = [10, 20];
 
-// @ensure obj : { x: Number, y: String }
+$ensure `obj : { x: Number, y: String }`
 var obj = { x: 11, y: 'twenty-two' }
 
-// @ensure inc : (Number) => Number
+$ensure `inc : (Number) => Number`
 function inc (num) {
   return num + 1;
 }
 
-// @ensure add : (Number, Number) => Number
+$ensure `add : (Number, Number) => Number`
 function add (x, y) {
   return x + y + 1;
 }
 
-// @ensure favFoods : () => Array(String)
+$ensure `favFoods : () => Array(String)`
 function favFoods () {
   return ['bananas', 'cherries', 'potatoes'];
 }
 
-// @ensure wrap : (x) => Array(x)
+$ensure `wrap : (a) => Array(a)`
 function wrap (value) {
   return [value];
 }
+
+
+var React = require('react')
+
+$ensure `withLayout : (React.VirtualElement) => React.VirtualElement`
+function withLayout (contents) {
+  return React.createElement('div', { class: 'layout' }, contents)
+}
 ```
 
-The key point to recognize is that a function type annotation takes the form `(inputs...) => output`. This is very similar to [ES6 arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions), except parenthesis around the inputs are required.
+The key point to recognize is that a function type annotation takes the form `(inputs...) => output`. The annotations make use of (or look very similar to) [ES6 arrow functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/Arrow_functions), except that parenthesis around the inputs are always required.
 
-## Type Declarations
-
-Type declarations are written in comments to keep JS Zero ES6-compatible.
 
 ### Type Aliases
 
-To declare a type alias, use the `@type` declaration. This creates an alias that is no different than the type you set it to.
+To declare a type alias, simply construct it from existing types. This creates an alias that is no different than the type you set it to.
 
 ```javascript
-// @type Venue = { name: String, rating: Number }
+let Venue = Object.of({ name: String, rating: Number })
 ```
 
 ### Assumptions
 
-When working with IO, many times you will be reading data from some external source. In these cases you don't want JS Zero to attempt (and fail) at determining your types. Instead, you want to use `@assume` to explicitly declare what types your incoming data will be.
+When working with IO, many times you will be reading data from some external source. In these cases you don't want JS Zero to attempt (and fail) at determining your types. Instead, you want to use `$assume` to explicitly declare what types your incoming data will be.
 
 ```javascript
-// @type Pet = { name: String, happiness: Number }
+let Pet = Object.of({ name: String, happiness: Number })
 
-// @assume fetchPets : (Number) => Array(Pet)
+$assume `fetchPets : (Number) => Array(Pet)`
 function fetchPets (minHappiness) {
   return knex.select('*').from('pets').where('happiness', '>', minHappiness)
 }
@@ -137,7 +142,7 @@ function fetchPets (minHappiness) {
 Although not required, you can annotate any JS Zero function using `@ensure` and force the type system to **enforce** the function follows the type you specify.
 
 ```javascript
-// @ensure multiplyString : (Number, String) => String
+$ensure `(Number, String) => String`
 function multiplyString (times, str) {
   return new Array(times).fill(str); // oops, forgot to join the strings together!
 }
@@ -147,49 +152,91 @@ In the above example, JS Zero would normally infer has the type `(Number, String
 
 ### New Types
 
-To declare an entirely new type, use the `@newtype` declaration. This is useful for creating opaque types when declaring modules (explained in the next section).
+To declare an entirely new type, use the `$newtype` declaration. This is useful for creating opaque types when declaring modules (explained in the next section).
 
 For example, here is how you create an opaque type:
 
 ```javascript
-// @newtype VirtualElement
-// @assume React.render : (String, Object) => VirtualElement
+let VirtualElement = $newtype()
+$assume( React.render, (String, Object) => VirtualElement )
 ```
 
 A new type is only considered equal to itself, even if its structure is the same as another type's structure. For example:
 
 ```javascript
-// @type Person = { name: String }
-// @type Book   = { name: String }
+let Person = Object.of({ name: String })
+let Book   = Object.of({ name: String })
 
-// @newtype Person2 = { name: String }
+let Person2 = $newtype `{ name: String }`
 ```
 
-Even though `Person` and `Person2` are structurally the same, they are not considered equal. In contrast, type `Person` and `Book` are both type **aliases**, and thus considered the same type.
+Even though `Person` and `Person2` are structurally the same, they are not considered equal; `Person2` is a type distinctly different from `{ name: String }`. In contrast, type `Person` and `Book` are both type **aliases**, and thus considered the same type.
 
 ### Module Declarations
 
-To safely and effectively use a large library, you or someone else might need to write a larger number of type declarations. You can do so using the `@module` block comment:
+To safely and effectively use a large library, you or someone else might need to write a larger number of type declarations. You can do so using the `$module` function:
 
 ```javascript
-/*
-@module JQuery 'jquery' {
-  @newtype Wrapper = {
-    on: (String, DomEventHandler) => Wrapper,
-    show: (String) => Wrapper,
-    hide: (String) => Wrapper
-  }
+$module('jquery', function () {
 
-  @newtype Deferred(value) = {
-    then: ((value) => newValue) => Deferred(newValue)
-  }
+  let jQueryObject = $newtype().withPrototype({
+    on: (String, DomEventHandler) => jQueryObject,
+    show: (String) => jQueryObject,
+    hide: (String) => jQueryObject
+  }))
 
-  this : (String) => Wrapper;
-}
-*/
+  let Deferred = $newtype('v').withPrototype(function(valueType) {
+    return {
+      then: $compileType('((v) => v2) => d', { v: valueType, d: Deferred })
+    }
+  })
+})
+
 var $ = require('jquery');
 ```
 
 In the above example, the `JQuery` part of `@module JQuery` is the name of the type, while the [optional] `'jquery'` part is the string name you pass into `require`.
 
 [[Discuss type declarations]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1)
+
+## Prelude
+
+Aside from type checking, JS Zero aims to also give a good toolset for typed functional programming.
+
+### Option
+
+`Option` is a type that represents an optional value. It's the type you get when you use default parameters. For example:
+
+```js
+
+// This function has type: (Number, ?Number) => Number
+// Or, more explicitly:    (Number, Option(Number)) => Number
+let add = (a, b=10) => a + b;
+```
+
+### Result
+
+The `Result` type is a handy tool for representing an operation which may or not fail. If successful, you get an `Ok` enum containing the successful value. If not, you get an `Err` enum containing the error. For example:
+
+```js
+let { Ok, Err } = Result
+let User = Object.of({ username: String, password: String })
+
+$ensure `createUser : (User) => Result(User, String)`
+
+let createUser = (user) =>
+  Ok(user)
+  .then( validateUsername )
+  .then( validatePassword )
+
+let validateUsername = (user) =>
+  /^[a-z]+$/.test(user.username) ? Ok(user) : Err('Invalid username')
+
+let validatePassword = (user) =>
+  user.password.length > 0 ? Ok(user) : Err('Invalid password')
+
+// This will console log: 'Invalid username'
+createUser({ username: 'n00b', password: '123' })
+  .then( user => console.log("Validated user:", user) )
+  .catch( err => console.log(err) )
+```

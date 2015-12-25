@@ -2,7 +2,7 @@
 
 # Zero bugs, Zero hassle.
 
-*Current Status: Design phase. We need your input!*
+*Current Status: [alpha prototype](https://github.com/js-zero/type-checker). We need your input!*
 
 JavaScript is getting more and more popular every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.
 
@@ -56,28 +56,33 @@ Because JS Zero must be valid JavaScript, we must declare these types **in comme
 // Although GitHub returns much more data,
 // we only need to declare the types of data we care about.
 //
-// @type Repo = { id: Number, name: String, languages_url: String }
-// @type Languages = Map(String, Number)
+let Repo = Object.of({ id: Number, name: String, languages_url: String })
+let Languages = Map.of(String, Number)
 ```
 
 As mentioned, the type of an API request cannot be inferred. That's ok; we can tell JS Zero to **assume** the type of a function instead of type checking the function's body. This means JS Zero will **trust** that our type declaration is correct.
 
-In our example, we tell JS Zero to `@assume` specific types for our API calls:
+In our example, we tell JS Zero to *assume* specific types for our API calls:
 
 ```javascript
-// @assume fetchRepos : (String) => Promise(Array(Repo), HttpError)
+// Pretend `HTTP` is a library that returns a promise
+
+$assume `fetchRepos : (String) => Promise( Array(Repo) )`
+
 function fetchRepos (user) {
-  // Pretend `HTTP` is a library that returns a promise
-  return HTTP.get('http://api.github.com/users/' + user + '/repos');
+  return HTTP.get('http://api.github.com/users/' + user + '/repos')
 }
 
-// @assume fetchLangs : (String) => Promise(Languages, HttpError)
-function fetchLangs (languages_url) {
 
-  return HTTP.get(languages_url).then(function(langs) {
-    // Be careful! The above `@assume` means no type checking will be done for this code.
-    var keyValPairs = Object.keys(langs).map( k => [k, langs[k]] );
-    return new Map(keyValPairs);
+$assume `fetchLangs : (Repo) => Promise( Array(Language) )`
+
+function fetchLangs (repo) {
+  // Be careful! The above `$assume` means no type checking
+  // will be done for the body of this function.
+
+  return HTTP.get(repo.languages_url).then(function(langs) {
+    var keyValPairs = Object.keys(langs).map( k => [k, langs[k]] )
+    return new Map(keyValPairs)
   })
 }
 ```
@@ -102,7 +107,7 @@ myFormElement.addEventListener('submit', function(e) {
 
     .then(function(repoLanguages) {
       // At this point, `repoLanguages` is an Array of Languages.
-      // In other words, it has the type Array( Map(String, Number) ).
+      // In other words, it has the concrete type: Array( Map(String, Number) ).
       // If that slipped by you, no problem. JS Zero has got you covered.
 
       var totalLineCount = repoLanguages
@@ -128,37 +133,42 @@ As you can see, once you annotate your boundaries (HTTP in this case), no furthe
 Although all JS Zero code is valid JavaScript code, not all JavaScript code is valid Zero code. If you want your code to be type safe, sometimes you will have to annotate 3rd party libraries.
 
 
-As it turns out, `@assume` is an easy way to do this if you only need a function or two. For example, let's say you want to use the [marked](https://github.com/chjj/marked) npm package to render some markdown:
+As it turns out, `$assume` is an easy way to do this if you only need a function or two. For example, let's say you want to use the [marked](https://github.com/chjj/marked) npm package to render some markdown:
 
 ```javascript
-// @assume marked : (String) => String
-var marked = require('marked');
-console.log( marked('I am using __markdown__.') );
+$assume `marked : (String) => String`
+var marked = require('marked')
+
+console.log( marked('I am using __markdown__.') )
 ```
 
 On the other hand, if you're importing a larger library, you might need to write annotations yourself (assuming someone else has not already). For example, if you want to use [React.js](http://facebook.github.io/react/index.html) to handle your views, the type declarations might look something like this:
 
 ```javascript
-/*
-@module React 'react' {
-  @newtype VirtualElement;
-  @type Attrs = Object | Null;
-  @type Child = String | VirtualElement;
+$module('react', function () {
+  let VirtualElement = $newType()
+  let Attrs = Option.of( Object )
+  let Child = Union(String, VirtualElement)
 
-  createElement : (String) => VirtualElement;
-  createElement : (String, Attrs) => VirtualElement;
-  createElement : (String, Attrs, Child...) => VirtualElement;
-  render : (VirtualElement, DomElement) => Void;
-}
-*/
-var React = require('react');
+  return {
+    createElement: Function.multi(
+      `(String)                  => VirtualElement`,
+      `(String, Attrs)           => VirtualElement`,
+      `(String, Attrs, ...Child) => VirtualElement`
+    ),
+    render: `(VirtualElement, DomElement) => Void`
+  }
+})
+var React = require('react')
 
 // All type safe!
 React.render(
   React.createElement('h1', null, 'Hello, world!'),
   document.getElementById('.my-div')
-);
+)
 ```
+
+Most of the JSZ methods and types (`$module`, `$newType`, etc.) don't do any runtime computation; they are only there to inform the type checker in a fully ES6-compatible manner.
 
 [[Discuss JS code integration]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15)
 
@@ -166,7 +176,7 @@ React.render(
 
 JS Zero is only in its design phase. If want JS Zero to happen, here are some ways you can help:
 
-- Star the [GitHub repo](https://github.com/js-zero/docs),
+- Contribute to or star the [GitHub repo](https://github.com/js-zero/type-checker),
 - Help spread the word with a [retweet](https://twitter.com/mindeavor/status/642722237452152832), or a [tweet of your own](https://twitter.com/intent/tweet?text=Help%20build%20a%20safer%20JavaScript%20with%20JS%20Zero!%20http%3A%2F%2Fjs-zero.com%2F),
 - **Show your support / interest** by making a quick post [to this thread](http://discuss.js-zero.com/t/show-your-support/20) (easy GitHub login)
 - Or [join the detailed discussion](http://discuss.js-zero.com/) and influence the direction of the project!

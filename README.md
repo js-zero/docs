@@ -14,6 +14,10 @@
 
 Read the [rest of the documentation and intro here](http://js-zero.com).
 
+## Status
+
+JS Zero is currently in the **prototype** stage. You can see the source code progress here: https://github.com/js-zero/type-checker
+
 ## Contributing
 
 JS Zero is currently in its **design phase**. We're employing [Readme-Driven Development](http://tom.preston-werner.com/2010/08/23/readme-driven-development.html).

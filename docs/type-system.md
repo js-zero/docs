@@ -18,12 +18,16 @@ $.ajax({ type: 'GET', url: 'http://api.example.com' });
 With intersection types, you can express this relationship by intersecting two completely different types. For example:
 
 ```javascript
-// @type JQueryCallable = (String) => JQueryObject
-// @type JQueryAjax     = { ajax: (Object) => JQueryDeferred }
+let JQueryObject   = $newType(...)
+let JQueryDeferred = $newType(...)
 
-// @assume $ : JQueryCallable & JQueryAjax
-$('button');
-$.ajax({ type: 'GET', url: 'http://api.example.com' });
+$assume($, Function.multi(
+  (String) => JQueryObject,
+  { ajax: (Object) => JQueryDeferred }
+))
+
+$('button'); //=> JQueryObject
+$.ajax({ type: 'GET', url: 'http://api.example.com' }); //=> JQueryDeferred
 ```
 
 Both [Flowtype](http://flowtype.org/) and [TypeScript](http://www.typescriptlang.org/) have intersection types as a feature.
@@ -58,19 +62,16 @@ Because `data` has type `Array`, it can call any methods on `Array.prototype`. T
 
 If we were to manually declare part of the `Array` type, it might look something like this:
 
-```javascript
-/*
-@newtype Array(t);
-@assume  Array(t).prototype : {
-  map:    ((t) => returnType) => Array(returnType),
-  reduce: ((t, t) => t) => t,
-  reduce: ((acc, t) => acc, acc) => acc
-};
-*/
+```js
+// TODO: API design needs works
+Array.prototype = $newType.withParams('e').annotatePrototype({
+  map: '((e) => b) => b',
+
+  reduce: Function.multi(
+    '((e, e) => r) => r',
+    '((acc, e) => acc, acc) => acc'
+  )
+})
 ```
-
-### Implementation Approach (idea)
-
-At first, the type system will not have the responsibility of inferring prototype methods. Instead, we will annotate the primitive types manually. The idea is we encourage developers to use primitives as much as possible, and use plain functions when creating their own data structures. If necessary, and if possible, we can add prototype inference later.
 
 [[Discuss typing prototypes]](http://discuss.js-zero.com/t/typing-prototypes/18/1)
