@@ -149,12 +149,16 @@ $.ajax({ type: 'GET', url: 'http://api.example.com' });
 </code></pre>
 
 <p>With intersection types, you can express this relationship by intersecting two completely different types. For example:</p>
-<pre><code class="javascript">// @type JQueryCallable = (String) =&gt; JQueryObject
-// @type JQueryAjax     = { ajax: (Object) =&gt; JQueryDeferred }
+<pre><code class="javascript">let JQueryObject   = $newType(...)
+let JQueryDeferred = $newType(...)
 
-// @assume $ : JQueryCallable &amp; JQueryAjax
-$('button');
-$.ajax({ type: 'GET', url: 'http://api.example.com' });
+$assume($, Function.multi(
+  (String) =&gt; JQueryObject,
+  { ajax: (Object) =&gt; JQueryDeferred }
+))
+
+$('button'); //=&gt; JQueryObject
+$.ajax({ type: 'GET', url: 'http://api.example.com' }); //=&gt; JQueryDeferred
 </code></pre>
 
 <p>Both <a href="http://flowtype.org/">Flowtype</a> and <a href="http://www.typescriptlang.org/">TypeScript</a> have intersection types as a feature.</p>
@@ -181,18 +185,17 @@ function add (x, y) { return x + y; }
 
 <p>Because <code>data</code> has type <code>Array</code>, it can call any methods on <code>Array.prototype</code>. The type system is aware of this and allows <code>data</code> to run both the <code>map</code> and <code>reduce</code> methods.</p>
 <p>If we were to manually declare part of the <code>Array</code> type, it might look something like this:</p>
-<pre><code class="javascript">/*
-@newtype Array(t);
-@assume  Array(t).prototype : {
-  map:    ((t) =&gt; returnType) =&gt; Array(returnType),
-  reduce: ((t, t) =&gt; t) =&gt; t,
-  reduce: ((acc, t) =&gt; acc, acc) =&gt; acc
-};
-*/
+<pre><code class="js">// TODO: API design needs works
+Array.prototype = $newType.withParams('e').annotatePrototype({
+  map: '((e) =&gt; b) =&gt; b',
+
+  reduce: Function.multi(
+    '((e, e) =&gt; r) =&gt; r',
+    '((acc, e) =&gt; acc, acc) =&gt; acc'
+  )
+})
 </code></pre>
 
-<h3 id="implementation-approach-idea">Implementation Approach (idea)</h3>
-<p>At first, the type system will not have the responsibility of inferring prototype methods. Instead, we will annotate the primitive types manually. The idea is we encourage developers to use primitives as much as possible, and use plain functions when creating their own data structures. If necessary, and if possible, we can add prototype inference later.</p>
 <p><a href="http://discuss.js-zero.com/t/typing-prototypes/18/1">[Discuss typing prototypes]</a></p></div>
             
         </div>

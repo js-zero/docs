@@ -144,7 +144,7 @@
 
 <p><img alt="JS Zero" src="./img/logo-medium.png" /></p>
 <h1 id="zero-bugs-zero-hassle">Zero bugs, Zero hassle.</h1>
-<p><em>Current Status: Design phase. We need your input!</em></p>
+<p><em>Current Status: <a href="https://github.com/js-zero/type-checker">alpha prototype</a>. We need your input!</em></p>
 <p>JavaScript is getting more and more popular every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.</p>
 <p>Many efforts have been made to create new, safer languages that compile <em>to</em> JavaScript. While many of these languages are designed very well, the fact is <strong>most people already know JavaScript</strong>, and are not so inclined to learn a new language to do the same things JavaScript can do.</p>
 <p><strong>JS Zero</strong> is a <strong>ES6-compatible, proper subset</strong> of JavaScript that aims to be functional and type-safe for doing I/O in web applications. <a href="http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13">[Discuss this point]</a></p>
@@ -180,25 +180,30 @@
 <pre><code class="javascript">// Although GitHub returns much more data,
 // we only need to declare the types of data we care about.
 //
-// @type Repo = { id: Number, name: String, languages_url: String }
-// @type Languages = Map(String, Number)
+let Repo = Object.of({ id: Number, name: String, languages_url: String })
+let Languages = Map.of(String, Number)
 </code></pre>
 
 <p>As mentioned, the type of an API request cannot be inferred. That's ok; we can tell JS Zero to <strong>assume</strong> the type of a function instead of type checking the function's body. This means JS Zero will <strong>trust</strong> that our type declaration is correct.</p>
-<p>In our example, we tell JS Zero to <code>@assume</code> specific types for our API calls:</p>
-<pre><code class="javascript">// @assume fetchRepos : (String) =&gt; Promise(Array(Repo), HttpError)
+<p>In our example, we tell JS Zero to <em>assume</em> specific types for our API calls:</p>
+<pre><code class="javascript">// Pretend `HTTP` is a library that returns a promise
+
+$assume `fetchRepos : (String) =&gt; Promise( Array(Repo) )`
+
 function fetchRepos (user) {
-  // Pretend `HTTP` is a library that returns a promise
-  return HTTP.get('http://api.github.com/users/' + user + '/repos');
+  return HTTP.get('http://api.github.com/users/' + user + '/repos')
 }
 
-// @assume fetchLangs : (String) =&gt; Promise(Languages, HttpError)
-function fetchLangs (languages_url) {
 
-  return HTTP.get(languages_url).then(function(langs) {
-    // Be careful! The above `@assume` means no type checking will be done for this code.
-    var keyValPairs = Object.keys(langs).map( k =&gt; [k, langs[k]] );
-    return new Map(keyValPairs);
+$assume `fetchLangs : (Repo) =&gt; Promise( Array(Language) )`
+
+function fetchLangs (repo) {
+  // Be careful! The above `$assume` means no type checking
+  // will be done for the body of this function.
+
+  return HTTP.get(repo.languages_url).then(function(langs) {
+    var keyValPairs = Object.keys(langs).map( k =&gt; [k, langs[k]] )
+    return new Map(keyValPairs)
   })
 }
 </code></pre>
@@ -221,7 +226,7 @@ myFormElement.addEventListener('submit', function(e) {
 
     .then(function(repoLanguages) {
       // At this point, `repoLanguages` is an Array of Languages.
-      // In other words, it has the type Array( Map(String, Number) ).
+      // In other words, it has the concrete type: Array( Map(String, Number) ).
       // If that slipped by you, no problem. JS Zero has got you covered.
 
       var totalLineCount = repoLanguages
@@ -241,39 +246,43 @@ function add (x, y) { return x + y; }
 <h2 id="integrating-with-other-js-code">Integrating with Other JS Code</h2>
 <p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15">[Discuss this topic]</a></p>
 <p>Although all JS Zero code is valid JavaScript code, not all JavaScript code is valid Zero code. If you want your code to be type safe, sometimes you will have to annotate 3rd party libraries.</p>
-<p>As it turns out, <code>@assume</code> is an easy way to do this if you only need a function or two. For example, let's say you want to use the <a href="https://github.com/chjj/marked">marked</a> npm package to render some markdown:</p>
-<pre><code class="javascript">// @assume marked : (String) =&gt; String
-var marked = require('marked');
-console.log( marked('I am using __markdown__.') );
+<p>As it turns out, <code>$assume</code> is an easy way to do this if you only need a function or two. For example, let's say you want to use the <a href="https://github.com/chjj/marked">marked</a> npm package to render some markdown:</p>
+<pre><code class="javascript">$assume `marked : (String) =&gt; String`
+var marked = require('marked')
+
+console.log( marked('I am using __markdown__.') )
 </code></pre>
 
 <p>On the other hand, if you're importing a larger library, you might need to write annotations yourself (assuming someone else has not already). For example, if you want to use <a href="http://facebook.github.io/react/index.html">React.js</a> to handle your views, the type declarations might look something like this:</p>
-<pre><code class="javascript">/*
-@module React 'react' {
-  @newtype VirtualElement;
-  @type Attrs = Object | Null;
-  @type Child = String | VirtualElement;
+<pre><code class="javascript">$module('react', function () {
+  let VirtualElement = $newType()
+  let Attrs = Option.of( Object )
+  let Child = Union(String, VirtualElement)
 
-  createElement : (String) =&gt; VirtualElement;
-  createElement : (String, Attrs) =&gt; VirtualElement;
-  createElement : (String, Attrs, Child...) =&gt; VirtualElement;
-  render : (VirtualElement, DomElement) =&gt; Void;
-}
-*/
-var React = require('react');
+  return {
+    createElement: Function.multi(
+      `(String)                  =&gt; VirtualElement`,
+      `(String, Attrs)           =&gt; VirtualElement`,
+      `(String, Attrs, ...Child) =&gt; VirtualElement`
+    ),
+    render: `(VirtualElement, DomElement) =&gt; Void`
+  }
+})
+var React = require('react')
 
 // All type safe!
 React.render(
   React.createElement('h1', null, 'Hello, world!'),
   document.getElementById('.my-div')
-);
+)
 </code></pre>
 
+<p>Most of the JSZ methods and types (<code>$module</code>, <code>$newType</code>, etc.) don't do any runtime computation; they are only there to inform the type checker in a fully ES6-compatible manner.</p>
 <p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15">[Discuss JS code integration]</a></p>
 <h2 id="interested">Interested?</h2>
 <p>JS Zero is only in its design phase. If want JS Zero to happen, here are some ways you can help:</p>
 <ul>
-<li>Star the <a href="https://github.com/js-zero/docs">GitHub repo</a>,</li>
+<li>Contribute to or star the <a href="https://github.com/js-zero/type-checker">GitHub repo</a>,</li>
 <li>Help spread the word with a <a href="https://twitter.com/mindeavor/status/642722237452152832">retweet</a>, or a <a href="https://twitter.com/intent/tweet?text=Help%20build%20a%20safer%20JavaScript%20with%20JS%20Zero!%20http%3A%2F%2Fjs-zero.com%2F">tweet of your own</a>,</li>
 <li><strong>Show your support / interest</strong> by making a quick post <a href="http://discuss.js-zero.com/t/show-your-support/20">to this thread</a> (easy GitHub login)</li>
 <li>Or <a href="http://discuss.js-zero.com/">join the detailed discussion</a> and influence the direction of the project!</li>
@@ -324,5 +333,5 @@ React.render(
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-09-18 15:56:07.747493
+Build Date UTC : 2015-12-25 18:06:12.192970
 -->
