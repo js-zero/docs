@@ -131,7 +131,7 @@ When working with IO, many times you will be reading data from some external sou
 ```javascript
 let Pet = Object.of({ name: String, happiness: Number })
 
-$assume `fetchPets : (Number) => Array(Pet)`
+$assume `fetchPets : (Number) => Promise( Array(Pet) )`
 function fetchPets (minHappiness) {
   return knex.select('*').from('pets').where('happiness', '>', minHappiness)
 }
