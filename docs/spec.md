@@ -11,8 +11,6 @@ This document specifies exactly what parts of ES6 will be included in the JS Zer
 - Only require type annotations at **boundaries**
   - Database queries, HTTP requests, etc.
 
-[[Discuss these goals]](http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13)
-
 ## Anti-Goals
 
 Here are some things JS Zero is NOT trying to do:
@@ -23,8 +21,6 @@ Here are some things JS Zero is NOT trying to do:
   - Explanation: JavaScript is not designed to be a pure language. Forcing it to be so would not be worth the effort.
 - Require knowledge of advanced type-theory to effectively use JS Zero
   - Explanation: JS Zero is designed to be used by the average JavaScript developer.
-
-[[Discuss these anti-goals]](http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13)
 
 ## Specific Features
 
@@ -42,8 +38,6 @@ These features will be **omitted**:
 
 - No classes, no keyword `new`
 - No double equals `==`
-
-[[Discuss this subset of features]](http://discuss.js-zero.com/t/what-subset-of-features-will-js-zero-support/19)
 
 ## Built-in Types
 
@@ -196,8 +190,6 @@ var $ = require('jquery');
 ```
 
 In the above example, the `JQuery` part of `@module JQuery` is the name of the type, while the [optional] `'jquery'` part is the string name you pass into `require`.
-
-[[Discuss type declarations]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1)
 
 ## Prelude
 

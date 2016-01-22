@@ -8,7 +8,7 @@ JavaScript is getting more and more popular every day. However, the dynamic aspe
 
 Many efforts have been made to create new, safer languages that compile *to* JavaScript. While many of these languages are designed very well, the fact is **most people already know JavaScript**, and are not so inclined to learn a new language to do the same things JavaScript can do.
 
-**JS Zero** is a **ES6-compatible, proper subset** of JavaScript that aims to be functional and type-safe for doing I/O in web applications. [[Discuss this point]](http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13)
+**JS Zero** is a **ES6-compatible, proper subset** of JavaScript that aims to be functional and type-safe for doing I/O in web applications.
 
 ## Why JS Zero?
 
@@ -35,14 +35,10 @@ JS Zero has three main goals:
 - Design and build a type system that can type check this subset soundly
 - As a developer tool, remain easy and seamless to use and understand.
 
-[[Discuss this topic]](http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13)
-
 With these goals complete, JS Zero will help you significantly towards writing bug-free programs.
 
 
 ## Motivating Example
-
-[[Discuss this example]](http://discuss.js-zero.com/t/main-motivating-example/14)
 
 Let's pretend you're making an app that allows a user to enter their **GitHub username** and receive back the **total number of lines** written across their repositories. This will involve using [GitHub's API](https://developer.github.com/v3/).
 
@@ -122,13 +118,9 @@ myFormElement.addEventListener('submit', function(e) {
 function add (x, y) { return x + y; }
 ```
 
-[[Discuss this example]](http://discuss.js-zero.com/t/main-motivating-example/14)
-
 As you can see, once you annotate your boundaries (HTTP in this case), no further type declarations are necessary. The idea is, you record the shape of your data once, and then safely forget about it.
 
 ## Integrating with Other JS Code
-
-[[Discuss this topic]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15)
 
 Although all JS Zero code is valid JavaScript code, not all JavaScript code is valid Zero code. If you want your code to be type safe, sometimes you will have to annotate 3rd party libraries.
 
@@ -169,8 +161,6 @@ React.render(
 ```
 
 Most of the JSZ methods and types (`$module`, `$newType`, etc.) don't do any runtime computation; they are only there to inform the type checker in a fully ES6-compatible manner.
-
-[[Discuss JS code integration]](http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15)
 
 ## Interested?
 

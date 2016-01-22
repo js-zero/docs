@@ -24,8 +24,8 @@ JS Zero is currently in its **design phase**. We're employing [Readme-Driven Dev
 
 There are three ways you can contribute:
 
-- [Discuss](http://discuss.js-zero.com) - help decide what exactly JS Zero should do, and techniques on how to do it!
-- Maintain - help keep the docs (this repo) up to date with the latest [discussions](http://discuss.js-zero.com).
+- [Discuss](https://github.com/js-zero/type-checker/issues) - help decide what exactly JS Zero should do, and techniques on how to do it!
+- Maintain - help keep [the docs (this repo)](https://github.com/js-zero/docs) up to date.
 - Contribute (not yet) - once [the spec](http://js-zero.com/spec) is closer to being final, help write code that web developers will use everywhere.
 
 ### Building the Docs

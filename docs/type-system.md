@@ -32,8 +32,6 @@ $.ajax({ type: 'GET', url: 'http://api.example.com' }); //=> JQueryDeferred
 
 Both [Flowtype](http://flowtype.org/) and [TypeScript](http://www.typescriptlang.org/) have intersection types as a feature.
 
-[[Discuss intersection types]](http://discuss.js-zero.com/t/intersection-types/17)
-
 ## Primitive types
 
 - Booleans
@@ -73,5 +71,3 @@ Array.prototype = $newType.withParams('e').annotatePrototype({
   )
 })
 ```
-
-[[Discuss typing prototypes]](http://discuss.js-zero.com/t/typing-prototypes/18/1)
