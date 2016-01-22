@@ -156,7 +156,6 @@
 <li>Only require type annotations at <strong>boundaries</strong></li>
 <li>Database queries, HTTP requests, etc.</li>
 </ul>
-<p><a href="http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13">[Discuss these goals]</a></p>
 <h2 id="anti-goals">Anti-Goals</h2>
 <p>Here are some things JS Zero is NOT trying to do:</p>
 <ul>
@@ -167,7 +166,6 @@
 <li>Require knowledge of advanced type-theory to effectively use JS Zero</li>
 <li>Explanation: JS Zero is designed to be used by the average JavaScript developer.</li>
 </ul>
-<p><a href="http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13">[Discuss these anti-goals]</a></p>
 <h2 id="specific-features">Specific Features</h2>
 <p>(incomplete) This is the subset of features you will be able to write in JavaScript Zero:</p>
 <ul>
@@ -184,7 +182,6 @@
 <li>No classes, no keyword <code>new</code></li>
 <li>No double equals <code>==</code></li>
 </ul>
-<p><a href="http://discuss.js-zero.com/t/what-subset-of-features-will-js-zero-support/19">[Discuss this subset of features]</a></p>
 <h2 id="built-in-types">Built-in Types</h2>
 <p>JS Zero several basic types...</p>
 <pre><code>String
@@ -255,7 +252,7 @@ function withLayout (contents) {
 <p>When working with IO, many times you will be reading data from some external source. In these cases you don't want JS Zero to attempt (and fail) at determining your types. Instead, you want to use <code>$assume</code> to explicitly declare what types your incoming data will be.</p>
 <pre><code class="javascript">let Pet = Object.of({ name: String, happiness: Number })
 
-$assume `fetchPets : (Number) =&gt; Array(Pet)`
+$assume `fetchPets : (Number) =&gt; Promise( Array(Pet) )`
 function fetchPets (minHappiness) {
   return knex.select('*').from('pets').where('happiness', '&gt;', minHappiness)
 }
@@ -306,7 +303,6 @@ var $ = require('jquery');
 </code></pre>
 
 <p>In the above example, the <code>JQuery</code> part of <code>@module JQuery</code> is the name of the type, while the [optional] <code>'jquery'</code> part is the string name you pass into <code>require</code>.</p>
-<p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15/1">[Discuss type declarations]</a></p>
 <h2 id="prelude">Prelude</h2>
 <p>Aside from type checking, JS Zero aims to also give a good toolset for typed functional programming.</p>
 <h3 id="option">Option</h3>

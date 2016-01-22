@@ -147,7 +147,7 @@
 <p><em>Current Status: <a href="https://github.com/js-zero/type-checker">alpha prototype</a>. We need your input!</em></p>
 <p>JavaScript is getting more and more popular every day. However, the dynamic aspect of JavaScript often makes it difficult to correctly write and maintain complex applications.</p>
 <p>Many efforts have been made to create new, safer languages that compile <em>to</em> JavaScript. While many of these languages are designed very well, the fact is <strong>most people already know JavaScript</strong>, and are not so inclined to learn a new language to do the same things JavaScript can do.</p>
-<p><strong>JS Zero</strong> is a <strong>ES6-compatible, proper subset</strong> of JavaScript that aims to be functional and type-safe for doing I/O in web applications. <a href="http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13">[Discuss this point]</a></p>
+<p><strong>JS Zero</strong> is a <strong>ES6-compatible, proper subset</strong> of JavaScript that aims to be functional and type-safe for doing I/O in web applications.</p>
 <h2 id="why-js-zero">Why JS Zero?</h2>
 <pre><code class="text">
   +--------------+        +---------------+        +--------------+
@@ -167,10 +167,8 @@
 <li>Design and build a type system that can type check this subset soundly</li>
 <li>As a developer tool, remain easy and seamless to use and understand.</li>
 </ul>
-<p><a href="http://discuss.js-zero.com/t/a-type-safe-subset-of-es6/13">[Discuss this topic]</a></p>
 <p>With these goals complete, JS Zero will help you significantly towards writing bug-free programs.</p>
 <h2 id="motivating-example">Motivating Example</h2>
-<p><a href="http://discuss.js-zero.com/t/main-motivating-example/14">[Discuss this example]</a></p>
 <p>Let's pretend you're making an app that allows a user to enter their <strong>GitHub username</strong> and receive back the <strong>total number of lines</strong> written across their repositories. This will involve using <a href="https://developer.github.com/v3/">GitHub's API</a>.</p>
 <p>At this point, JS Zero already provides <strong>a key feature</strong> to help us:</p>
 <ul>
@@ -241,10 +239,8 @@ myFormElement.addEventListener('submit', function(e) {
 function add (x, y) { return x + y; }
 </code></pre>
 
-<p><a href="http://discuss.js-zero.com/t/main-motivating-example/14">[Discuss this example]</a></p>
 <p>As you can see, once you annotate your boundaries (HTTP in this case), no further type declarations are necessary. The idea is, you record the shape of your data once, and then safely forget about it.</p>
 <h2 id="integrating-with-other-js-code">Integrating with Other JS Code</h2>
-<p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15">[Discuss this topic]</a></p>
 <p>Although all JS Zero code is valid JavaScript code, not all JavaScript code is valid Zero code. If you want your code to be type safe, sometimes you will have to annotate 3rd party libraries.</p>
 <p>As it turns out, <code>$assume</code> is an easy way to do this if you only need a function or two. For example, let's say you want to use the <a href="https://github.com/chjj/marked">marked</a> npm package to render some markdown:</p>
 <pre><code class="javascript">$assume `marked : (String) =&gt; String`
@@ -278,7 +274,6 @@ React.render(
 </code></pre>
 
 <p>Most of the JSZ methods and types (<code>$module</code>, <code>$newType</code>, etc.) don't do any runtime computation; they are only there to inform the type checker in a fully ES6-compatible manner.</p>
-<p><a href="http://discuss.js-zero.com/t/integrating-with-other-javascript-code/15">[Discuss JS code integration]</a></p>
 <h2 id="interested">Interested?</h2>
 <p>JS Zero is only in its design phase. If want JS Zero to happen, here are some ways you can help:</p>
 <ul>
@@ -333,5 +328,5 @@ React.render(
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2015-12-25 18:22:02.353106
+Build Date UTC : 2016-01-22 18:31:18.795584
 -->
