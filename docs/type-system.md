@@ -18,13 +18,13 @@ $.ajax({ type: 'GET', url: 'http://api.example.com' });
 With intersection types, you can express this relationship by intersecting two completely different types. For example:
 
 ```javascript
-let JQueryObject   = $newType(...)
-let JQueryDeferred = $newType(...)
+let JQueryObject   = Type.new(...)
+let JQueryDeferred = Type.new(...)
 
-$assume($, Function.multi(
-  (String) => JQueryObject,
-  { ajax: (Object) => JQueryDeferred }
-))
+$assume(`
+  $ : (String) => JQueryObject
+    & { ajax: (Object) => JQueryDeferred }
+`)
 
 $('button'); //=> JQueryObject
 $.ajax({ type: 'GET', url: 'http://api.example.com' }); //=> JQueryDeferred
@@ -62,12 +62,12 @@ If we were to manually declare part of the `Array` type, it might look something
 
 ```js
 // TODO: API design needs works
-Array.prototype = $newType.withParams('e').annotatePrototype({
-  map: '((e) => b) => b',
+$assume `Array.prototype : |v| {
 
-  reduce: Function.multi(
-    '((e, e) => r) => r',
-    '((acc, e) => acc, acc) => acc'
-  )
-})
+  map: ((v) => v2) => v2,
+
+  reduce: ((v, v) => v2) => v2
+        & ((acc, v) => acc, acc) => acc
+}
+`
 ```

@@ -16,7 +16,7 @@ This document specifies exactly what parts of ES6 will be included in the JS Zer
 Here are some things JS Zero is NOT trying to do:
 
 - Change the existing behavior of JavaScript
-  - Explanation: If something doesn't fit, it should be *removed* (but never changed)
+  - Explanation: If a semantic doesn't fit JS Zero, it should be *removed* (but never changed)
 - Force all code to be [pure](http://www.sitepoint.com/functional-programming-pure-functions/)
   - Explanation: JavaScript is not designed to be a pure language. Forcing it to be so would not be worth the effort.
 - Require knowledge of advanced type-theory to effectively use JS Zero
@@ -45,8 +45,8 @@ JS Zero several basic types...
 
 ```
 String
-Number
-Boolean
+Num
+Bool
 Object
 Function
 Symbol
@@ -115,7 +115,7 @@ The key point to recognize is that a function type annotation takes the form `(i
 To declare a type alias, simply construct it from existing types. This creates an alias that is no different than the type you set it to.
 
 ```javascript
-let Venue = Object.of({ name: String, rating: Number })
+let Venue = Object.ofType({ name: String, rating: Number })
 ```
 
 ### Assumptions
@@ -123,7 +123,7 @@ let Venue = Object.of({ name: String, rating: Number })
 When working with IO, many times you will be reading data from some external source. In these cases you don't want JS Zero to attempt (and fail) at determining your types. Instead, you want to use `$assume` to explicitly declare what types your incoming data will be.
 
 ```javascript
-let Pet = Object.of({ name: String, happiness: Number })
+let Pet = Object.ofType({ name: String, happiness: Number })
 
 $assume `fetchPets : (Number) => Promise( Array(Pet) )`
 function fetchPets (minHappiness) {
@@ -136,7 +136,7 @@ function fetchPets (minHappiness) {
 Although not required, you can annotate any JS Zero function using `@ensure` and force the type system to **enforce** the function follows the type you specify.
 
 ```javascript
-$ensure `(Number, String) => String`
+$ensure `multiplyString : (Number, String) => String`
 function multiplyString (times, str) {
   return new Array(times).fill(str); // oops, forgot to join the strings together!
 }
@@ -144,82 +144,194 @@ function multiplyString (times, str) {
 
 In the above example, JS Zero would normally infer has the type `(Number, String) => Array(String)` for `multiplyString` (see docs for [Array.fill](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/fill)). However, since we annotated our intended type with `@ensure`, JS Zero will instead throw a type error :)
 
-### New Types
+### Custom Types
 
-To declare an entirely new type, use the `$newtype` declaration. This is useful for creating opaque types when declaring modules (explained in the next section).
+To declare an entirely new type, use the `Type.new` builder. This is useful for creating your own custom types when declaring modules (explained in the next section).
 
 For example, here is how you create an opaque type:
 
 ```javascript
-let VirtualElement = $newtype()
-$assume( React.render, (String, Object) => VirtualElement )
+let VirtualElement = Type.new()
+$assume `React.render : (String, Object) => VirtualElement`
 ```
 
 A new type is only considered equal to itself, even if its structure is the same as another type's structure. For example:
 
 ```javascript
-let Person = Object.of({ name: String })
-let Book   = Object.of({ name: String })
+let Person = Object.ofType({ name: String })
+let Book   = Object.ofType({ name: String })
 
-let Person2 = $newtype `{ name: String }`
+let Person2 = Type.new({ name: String })
 ```
 
 Even though `Person` and `Person2` are structurally the same, they are not considered equal; `Person2` is a type distinctly different from `{ name: String }`. In contrast, type `Person` and `Book` are both type **aliases**, and thus considered the same type.
 
-### Module Declarations
+### A more advanced example
 
-To safely and effectively use a large library, you or someone else might need to write a larger number of type declarations. You can do so using the `$module` function:
+```js
+let Tree = Type.new(`|v|
+  Node({ value: v, left: Tree, right: Tree })
+  Leaf({ value: v })
+`)
 
-```javascript
-$module('jquery', function () {
+let Node = Tree.Node
+let Leaf = Tree.Leaf
 
-  let jQueryObject = $newtype().withPrototype({
-    on: (String, DomEventHandler) => jQueryObject,
-    show: (String) => jQueryObject,
-    hide: (String) => jQueryObject
-  }))
+let mySmallTree = Leaf(42)
 
-  let Deferred = $newtype('v').withPrototype(function(valueType) {
-    return {
-      then: $compileType('((v) => v2) => d', { v: valueType, d: Deferred })
-    }
-  })
-})
+let myBiggerTree = Node(
+  'the root',
+  Node(
+    'left child',
+    Leaf('leaf 1'),
+    Leaf('leaf 2'),
+  ),
 
-var $ = require('jquery');
+  Node(
+    'right child',
+    Leaf('leaf 3'),
+    Leaf('leaf 4'),
+  ),
+)
+
+myBiggerTree.right.left.value //=> 'leaf 3'
 ```
 
-In the above example, the `JQuery` part of `@module JQuery` is the name of the type, while the [optional] `'jquery'` part is the string name you pass into `require`.
+The above code will have the following inferred types:
+
+    Node         : (a, Tree, Tree)                         => Tree(a)
+                 & ({ value: a, left: Tree, right: Tree }) => Tree(a)
+
+    Leaf         : (a)            => Tree(a)
+                 & ({ value: a }) => Tree(a)
+    mySmallTree  : Tree(Num)
+    myBiggerTree : Tree(String)
+
+
+## Type Prototypes
+
+In an ideal world, JavaScript would be all functions and no `this`. But, this is not the case, so we must make do. Because JavaScript has no [pipeline operator](https://github.com/mindeavor/es-pipeline-operator), we must rely on **JavaScript prototypes** to create fluid interfaces that are still type-sound without additional annotations.
+
+```js
+let Person = Type.new({ name: String, hobby: String })
+  .withPrototype({
+    updateHobby: function (newHobby) {
+      return Person.let(this, { hobby: newHobby })
+    },
+    greet: function () {
+      return `${this.name} says "Hi! I like ${this.newHobby}"`
+    }
+  })
+
+let alice = Person.new('Alice', 'programming')
+
+//
+// All type-safe!
+//
+alice.updateHobby('stargazing').greet()
+//=> 'Alice says "Hi! I like stargazing"'
+```
+
+Notice how `updateHobby('stargazing')` and `greet()` require no type annotations. This is because `alice` is inferred to be of type `Person`, due to the assignment on the line before.
+
+## Functional Methods
+
+When you declare a type prototype, you not only get to use the prototype methods, but also the **functional methods** for free:
+
+```js
+let Person = Type.new({ name: String, hobby: String })
+  .withPrototype({
+    updateHobby: function (newHobby) {
+      return Person.let(this, { hobby: newHobby })
+    },
+    greet: function () {
+      return `${this.name} says "Hi! I like ${this.newHobby}"`
+    }
+  })
+
+let alice = Person.new('Alice', 'programming')
+let bob   = Person.new('Bob', 'gaming')
+
+Person.greet(alice) //=> 'Alice says "Hi! I like programming"'
+
+let greetings = [alice, bob].map( Person.greet )
+//=> ['Alice says "Hi! I like programming"', 'Bob says "Hi! I like gaming"']
+```
+
+As you can see, `Person.greet` is a function that takes its subject as an argument, as opposed to having to use `alice.greet()`. This is convenient for passing methods into other functions (as shown above with `map`), and also partial application (as shown below):
+
+```js
+// `papp` stands for 'partial application'
+let updatedPeople = [alice, bob].map( Person.updateHobby.papp('chillin') )
+```
+
+Note how `Person.updateHobby` takes its subject **last**; this is to make functional methods partial-application friendly.
+
+## Types as Annotations
+
+Sometimes the type of an object is not known to the compiler. For example, in the followng code, the `shoutGreet` function would not know its parameter should be of type `Person`:
+
+```js
+let Person = Type.new({ name: String, hobby: String })
+  .withPrototype({
+    greet: function () {
+      return `${this.name} says "Hi! I like ${this.newHobby}"`
+    }
+  })
+
+let shoutGreet = (person) =>
+  person.greet().toUpperCase() // Type error!
+```
+
+In the above example, JS Zero will complain about `person.greet()`, since it does not know the type of `person`. Fortunately, it's easy to fix this; just use your **type as an annotation**:
+
+```js
+let shoutGreet = (person) =>
+  Person(person).greet().toUpperCase() // All good :D
+```
+
+This is an intended restriction, to keep the type system fast, and to keep your code more readable. With that in mind, if you want your code to work with *any* type that has a `.greet()` function, you can use the `Type.Poly` annotation:
+
+```js
+let shoutGreet = (person) =>
+  Type.Poly(person).greet().toUpperCase()
+
+let alice = Person.new('Alice', 'programming')
+
+shoutGreet(alice) // OK
+shoutGreet({ greet: () => 'hi' }) // Also OK
+shoutGreet({ greet: () => 43 })   // Type Error! :)
+```
 
 ## Prelude
 
 Aside from type checking, JS Zero aims to also give a good toolset for typed functional programming.
 
-### Option
+### Optional
 
-`Option` is a type that represents an optional value. It's the type you get when you use default parameters. For example:
+`Optional` is a type that represents an optional value. It's the type you get when you use default parameters. For example:
 
 ```js
-
-// This function has type: (Number, ?Number) => Number
-// Or, more explicitly:    (Number, Option(Number)) => Number
+// This function has type: (Number, Optional(Number)) => Number
 let add = (a, b=10) => a + b;
 ```
 
 ### Result
 
-The `Result` type is a handy tool for representing an operation which may or not fail. If successful, you get an `Ok` enum containing the successful value. If not, you get an `Err` enum containing the error. For example:
+The `Result` type is a handy tool for representing an operation which may or not fail. If successful, you get an `Ok` enum containing the successful value. If not, you get an `Err` enum containing the error. It's kind of like a synchronous Promise.
+
+Here's an example:
 
 ```js
 let { Ok, Err } = Result
-let User = Object.of({ username: String, password: String })
+let User = Object.ofType({ username: String, password: String })
 
 $ensure `createUser : (User) => Result(User, String)`
 
 let createUser = (user) =>
   Ok(user)
-  .then( validateUsername )
-  .then( validatePassword )
+    .then( validateUsername )
+    .then( validatePassword )
 
 let validateUsername = (user) =>
   /^[a-z]+$/.test(user.username) ? Ok(user) : Err('Invalid username')
@@ -231,4 +343,37 @@ let validatePassword = (user) =>
 createUser({ username: 'n00b', password: '123' })
   .then( user => console.log("Validated user:", user) )
   .catch( err => console.log(err) )
+```
+
+## Module Declarations
+
+To safely and effectively use a large library, you or someone else might need to write a larger number of type declarations. You can do so using `Type.module`:
+
+```javascript
+Type.module('jquery', function () {
+
+  // Names of concrete types must be capitalized
+  let JQueryObject = Type.new()
+    .withPrototype({
+      on: `(String, DomEventHandler) => jQueryObject`,
+      show: `(String) => jQueryObject`,
+      hide: `(String) => jQueryObject`
+    })
+
+  return {
+    _this_: `(String) => JQueryObject`,
+    ajax: `({ type: String, url: String }) => Promise(?)`
+  }
+})
+
+var $ = require('jquery');
+
+$('#app')        //=> JQueryObject
+$('#app').show() //=> JQueryObject
+
+$.ajax({ type: 'GET', url: 'http://api.example.com' })
+  .then(function (data) {
+    $assume `data : Array({ name: String })` // Annotate your boundary!
+    return data.map( p => p.name )
+  })
 ```
