@@ -174,12 +174,12 @@
 <ul>
 <li>We must <strong>declare the types</strong> of the data we will get from the GitHub API. This is a reasonable requirement, since there is no way JS Zero can infer what kind of data GitHub will return.</li>
 </ul>
-<p>Because JS Zero must be valid JavaScript, we must declare these types <strong>in comments</strong>. Here is what type declarations for the above example would like (notice the <code>@</code> symbols):</p>
+<p>Because JS Zero must be valid JavaScript, we must declare these types <strong>in code</strong>. Here is what type declarations for the above example would like:</p>
 <pre><code class="javascript">// Although GitHub returns much more data,
-// we only need to declare the types of data we care about.
+// we only need to declare the data shapes we care about.
 //
-let Repo = Object.of({ id: Number, name: String, languages_url: String })
-let Languages = Map.of(String, Number)
+let Repo = Object.ofType({ id: Number, name: String, languages_url: String })
+let Languages = Map.ofType(String, Number)
 </code></pre>
 
 <p>As mentioned, the type of an API request cannot be inferred. That's ok; we can tell JS Zero to <strong>assume</strong> the type of a function instead of type checking the function's body. This means JS Zero will <strong>trust</strong> that our type declaration is correct.</p>
@@ -250,10 +250,10 @@ console.log( marked('I am using __markdown__.') )
 </code></pre>
 
 <p>On the other hand, if you're importing a larger library, you might need to write annotations yourself (assuming someone else has not already). For example, if you want to use <a href="http://facebook.github.io/react/index.html">React.js</a> to handle your views, the type declarations might look something like this:</p>
-<pre><code class="javascript">$module('react', function () {
-  let VirtualElement = $newType()
-  let Attrs = Option.of( Object )
-  let Child = Union(String, VirtualElement)
+<pre><code class="javascript">Type.module('react', function () {
+  let VirtualElement = Type.new()
+  let Attrs = Option.ofType( Object )
+  let Child = Type.Union(String, VirtualElement)
 
   return {
     createElement: Function.multi(
@@ -273,7 +273,7 @@ React.render(
 )
 </code></pre>
 
-<p>Most of the JSZ methods and types (<code>$module</code>, <code>$newType</code>, etc.) don't do any runtime computation; they are only there to inform the type checker in a fully ES6-compatible manner.</p>
+<p>Most of the JSZ methods and types (<code>Type.module</code>, <code>$assume</code> etc.) don't do any runtime computation; they are only there to inform the type checker in a fully ES6-compatible manner.</p>
 <h2 id="interested">Interested?</h2>
 <p>JS Zero is only in its design phase. If want JS Zero to happen, here are some ways you can help:</p>
 <ul>
@@ -328,5 +328,5 @@ React.render(
 
 <!--
 MkDocs version : 0.14.0
-Build Date UTC : 2016-01-22 18:31:18.795584
+Build Date UTC : 2016-05-28 00:56:14.135795
 -->

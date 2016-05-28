@@ -149,13 +149,13 @@ $.ajax({ type: 'GET', url: 'http://api.example.com' });
 </code></pre>
 
 <p>With intersection types, you can express this relationship by intersecting two completely different types. For example:</p>
-<pre><code class="javascript">let JQueryObject   = $newType(...)
-let JQueryDeferred = $newType(...)
+<pre><code class="javascript">let JQueryObject   = Type.new(...)
+let JQueryDeferred = Type.new(...)
 
-$assume($, Function.multi(
-  (String) =&gt; JQueryObject,
-  { ajax: (Object) =&gt; JQueryDeferred }
-))
+$assume(`
+  $ : (String) =&gt; JQueryObject
+    &amp; { ajax: (Object) =&gt; JQueryDeferred }
+`)
 
 $('button'); //=&gt; JQueryObject
 $.ajax({ type: 'GET', url: 'http://api.example.com' }); //=&gt; JQueryDeferred
@@ -185,14 +185,14 @@ function add (x, y) { return x + y; }
 <p>Because <code>data</code> has type <code>Array</code>, it can call any methods on <code>Array.prototype</code>. The type system is aware of this and allows <code>data</code> to run both the <code>map</code> and <code>reduce</code> methods.</p>
 <p>If we were to manually declare part of the <code>Array</code> type, it might look something like this:</p>
 <pre><code class="js">// TODO: API design needs works
-Array.prototype = $newType.withParams('e').annotatePrototype({
-  map: '((e) =&gt; b) =&gt; b',
+$assume `Array.prototype : |v| {
 
-  reduce: Function.multi(
-    '((e, e) =&gt; r) =&gt; r',
-    '((acc, e) =&gt; acc, acc) =&gt; acc'
-  )
-})
+  map: ((v) =&gt; v2) =&gt; v2,
+
+  reduce: ((v, v) =&gt; v2) =&gt; v2
+        &amp; ((acc, v) =&gt; acc, acc) =&gt; acc
+}
+`
 </code></pre></div>
             
         </div>
