@@ -45,8 +45,8 @@ JS Zero several basic types...
 
 ```
 String
-Num
-Bool
+Number
+Boolean
 Object
 Function
 Symbol
